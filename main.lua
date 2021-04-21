@@ -16,6 +16,9 @@ lovetoys.initialize({
 })
 
 
+local GameLogicSystem = require "ecs.systems.game_logic_system"
+
+
 local world
 
 
@@ -23,6 +26,8 @@ function love.load()
     engine = Engine()
 
     world = World()
+
+    engine:addSystem(GameLogicSystem(), "update")
 end
 
 
