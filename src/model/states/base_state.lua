@@ -25,4 +25,8 @@ function BaseState:exit(owner)
     return self.abstractmethod
 end
 
+function BaseState:notify(owner, event)
+    return self.abstractmethod
+end
+
 return BaseState

@@ -97,4 +97,12 @@ function FSM:is_in_state(state)
     return self.current_state == state
 end
 
+function FSM:has_state()
+    return not not self.current_state
+end
+
+function FSM:get_current_state()
+    return self.current_state
+end
+
 return setmetatable(FSM, {__call = FSM.new})

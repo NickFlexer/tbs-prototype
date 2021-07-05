@@ -5,37 +5,42 @@
 package.path = package.path .. ";lib/?/init.lua;lib/?.lua;src/?.lua"
 
 
-local lovetoys = require "lovetoys"
-
-local World = require "world.world"
-
-
-lovetoys.initialize({
-    globals = true,
-    debug = true
-})
+local GameEngine = require "model.game_engine"
+local EventManager = require "event_manager.event_manager"
+local Controller = require "controller.controller"
+local Viewer = require "view.viewer"
 
 
-local GameLogicSystem = require "ecs.systems.game_logic_system"
-
-
-local world
+local engine
+local controller
+local viewer
 
 
 function love.load()
-    engine = Engine()
+    local event_manager = EventManager()
 
-    world = World()
-
-    engine:addSystem(GameLogicSystem(), "update")
+    engine = GameEngine({
+        event_manager = event_manager
+    })
+    controller = Controller({
+        event_manager = event_manager
+    })
+    viewer = Viewer({
+        event_manager = event_manager,
+        model = engine
+    })
 end
 
 
 function love.update(dt)
-    engine:update(dt, world)
+    if not engine:is_running() then
+        engine:init()
+    end
+
+    engine:update()
 end
 
 
 function love.draw()
-    engine:draw()
+    viewer:render_all()
 end
