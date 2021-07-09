@@ -5,7 +5,7 @@
 local class = require "middleclass"
 local Input = require "input"
 
-local QuitEvent = require "event_manager.quit_event"
+local QuitEvent = require "event_manager.events.quit_event"
 
 
 local Controller = class("Controller")

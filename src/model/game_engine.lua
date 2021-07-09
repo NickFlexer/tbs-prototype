@@ -6,6 +6,9 @@ local class = require "middleclass"
 local FSM = require "fsm"
 
 local GameplayState = require "model.states.gameplay_state"
+local LoadDataState = require "model.states.load_data_state"
+
+local GameLoadedEvent = require "event_manager.events.game_loaded_event"
 
 
 local GameEngine = class("GameEngine")
@@ -19,6 +22,7 @@ function GameEngine:initialize(data)
     self.fsm = FSM(self)
 
     self.states = {
+        load_data = LoadDataState(),
         gameplay = GameplayState()
     }
 
@@ -27,6 +31,10 @@ function GameEngine:initialize(data)
 end
 
 function GameEngine:notify(event)
+    if event:isInstanceOf(GameLoadedEvent) then
+        self.fsm:change_state(self.states.gameplay)
+    end
+
     if self.fsm:has_state() then
         self.fsm:get_current_state():notify(self, event)
     end
@@ -34,7 +42,7 @@ end
 
 function GameEngine:init()
     self.running = true
-    self.fsm:set_current_state(self.states.gameplay)
+    self.fsm:set_current_state(self.states.load_data)
 end
 
 function GameEngine:is_running()
@@ -42,7 +50,7 @@ function GameEngine:is_running()
 end
 
 function GameEngine:update(dt)
-
+    self.fsm:update(dt)
 end
 
 function GameEngine:get_fsm()
@@ -51,6 +59,10 @@ end
 
 function GameEngine:get_states()
     return self.states
+end
+
+function GameEngine:get_event_manager()
+    return self.event_manager
 end
 
 return GameEngine
