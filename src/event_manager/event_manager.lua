@@ -8,6 +8,8 @@ local class = require "middleclass"
 local EventManager = class("EventManager")
 
 function EventManager:initialize(data)
+    self.logger = data.logger
+
     self.listeners = {}
 end
 
@@ -25,7 +27,7 @@ function EventManager:unregister(listener)
 end
 
 function EventManager:post(event)
-    print(event)
+    self.logger:debug(event)
 
     for _, listener in ipairs(self.listeners) do
         listener:notify(event)
