@@ -4,6 +4,8 @@
 
 local class = require "middleclass"
 
+local UpdateMapViewEvent = require "event_manager.events.update_map_view_event"
+
 
 local Viewer = class("Viewer")
 
@@ -23,7 +25,9 @@ function Viewer:initialize(data)
 end
 
 function Viewer:notify(event)
-    -- body
+    if event:isInstanceOf(UpdateMapViewEvent) then
+
+    end
 end
 
 function Viewer:render_all()

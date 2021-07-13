@@ -10,6 +10,8 @@ local LoadDataState = require "model.states.load_data_state"
 
 local GameLoadedEvent = require "event_manager.events.game_loaded_event"
 
+local Map = require "world.map"
+
 
 local GameEngine = class("GameEngine")
 
@@ -28,6 +30,8 @@ function GameEngine:initialize(data)
 
     self.event_manager:register(self)
     self.running = false
+
+    self.map = Map()
 end
 
 function GameEngine:notify(event)
@@ -63,6 +67,10 @@ end
 
 function GameEngine:get_event_manager()
     return self.event_manager
+end
+
+function GameEngine:get_map()
+    return self.map
 end
 
 return GameEngine

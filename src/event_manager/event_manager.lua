@@ -8,6 +8,10 @@ local class = require "middleclass"
 local EventManager = class("EventManager")
 
 function EventManager:initialize(data)
+    if not data.logger then
+        error("EventManager:initialize(): no data.logger argument!")
+    end
+
     self.logger = data.logger
 
     self.listeners = {}
