@@ -7,6 +7,8 @@ package.path = package.path .. ";lib/?/init.lua;lib/?.lua;src/?.lua"
 
 local Logger = require "utils.logger"
 
+local TileDrawer = require "view.tile_drawer"
+
 local GameEngine = require "model.game_engine"
 local EventManager = require "event_manager.event_manager"
 local Controller = require "controller.controller"
@@ -19,6 +21,8 @@ local viewer
 
 
 function love.load()
+    local tile_size = 64
+
     local logger = Logger()
 
     local event_manager = EventManager({
@@ -33,7 +37,12 @@ function love.load()
     })
     viewer = Viewer({
         event_manager = event_manager,
-        model = engine
+        model = engine,
+        drawer = TileDrawer({
+            file_path = "res/img/tileset01.png",
+            tile_size = tile_size
+        }),
+        tile_size = tile_size
     })
 end
 

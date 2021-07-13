@@ -15,4 +15,8 @@ function Cell:initialize(data)
     self.terrain = data.terrain
 end
 
+function Cell:get_terrain()
+    return self.terrain
+end
+
 return Cell

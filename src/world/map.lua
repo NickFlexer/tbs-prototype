@@ -20,4 +20,12 @@ function Map:set_cell(x, y, new_cell)
     self.map:set_cell(x, y, new_cell)
 end
 
+function Map:get_size()
+    return self.map:get_size()
+end
+
+function Map:get_all_cells()
+    return self.map:get_contents()
+end
+
 return Map

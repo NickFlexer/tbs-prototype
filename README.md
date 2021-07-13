@@ -8,3 +8,4 @@ Prototype of turn based strategy made with Love2d
 * [boipushy](https://github.com/a327ex/boipushy "boipushy")
 * [Lua-Grid](https://github.com/NickFlexer/Lua-Grid "Lua-Grid")
 * [json.lua](https://github.com/rxi/json.lua "json.lua")
+* [tile-cutter](https://github.com/NickFlexer/tile-cutter "tile-cutter")
