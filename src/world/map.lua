@@ -28,4 +28,12 @@ function Map:get_all_cells()
     return self.map:get_contents()
 end
 
+function Map:get_cell(x, y)
+    if not self.map:is_valid(x, y) then
+        return false
+    end
+
+    return self.map:get_cell(x, y)
+end
+
 return Map

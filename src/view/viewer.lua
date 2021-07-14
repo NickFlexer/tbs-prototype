@@ -4,7 +4,14 @@
 
 local class = require "middleclass"
 
+local Terrain = require "data.enums.terrains"
+
 local UpdateMapViewEvent = require "event_manager.events.update_map_view_event"
+
+
+local function ternary(cond , T , F)
+    if cond then return T else return F end
+end
 
 
 local Viewer = class("Viewer")
@@ -71,8 +78,39 @@ function Viewer:_render_map()
         local y = cell_data[2]
         local cell = cell_data[3]
 
+        local tile = nil
 
-        self.drawer:draw_at(cell:get_terrain(), (x - 1) * self.tile_size, (y - 1) * self.tile_size)
+        if cell:get_terrain() == Terrain.water then
+            local T = self:_terrain_at(Terrain.ground, x, y - 1)
+            local L = self:_terrain_at(Terrain.ground, x - 1, y)
+            local R = self:_terrain_at(Terrain.ground, x + 1, y)
+            local B = self:_terrain_at(Terrain.ground, x, y + 1)
+
+            local TL = ternary((T ~= 0 or L ~= 0), 0, self:_terrain_at(Terrain.ground, x - 1, y - 1))
+            local TR = ternary((T ~= 0 or R ~= 0), 0, self:_terrain_at(Terrain.ground, x + 1, y - 1))
+            local BL = ternary((B ~= 0 or L ~= 0), 0, self:_terrain_at(Terrain.ground, x - 1, y + 1))
+            local BR = ternary((B ~= 0 or R ~= 0), 0, self:_terrain_at(Terrain.ground, x + 1, y + 1))
+
+            local neigh_data = TL * 1 + T * 2 + TR * 4 + L * 8 + R * 16 + BL * 32 + B * 64 + BR * 128
+
+            tile = cell:get_terrain() .. "_" .. tostring(neigh_data)
+        else
+            tile = cell:get_terrain()
+        end
+
+        self.drawer:draw_at(tile, (x - 1) * self.tile_size, (y - 1) * self.tile_size)
+    end
+end
+
+function Viewer:_terrain_at(terrain, x, y)
+    if not self.model:get_map():get_cell(x, y) then
+        return 0
+    end
+
+    if self.model:get_map():get_cell(x, y):get_terrain() == terrain then
+        return 1
+    else
+        return 0
     end
 end
 
