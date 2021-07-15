@@ -7,6 +7,7 @@ local class = require "middleclass"
 local Terrain = require "data.enums.terrains"
 
 local UpdateMapViewEvent = require "event_manager.events.update_map_view_event"
+local NewCursorPositionEvent = require "event_manager.events.new_cursor_position_event"
 
 
 local function ternary(cond , T , F)
@@ -41,8 +42,10 @@ function Viewer:initialize(data)
     self.event_manager:register(self)
 
     self.map_canvas = nil
+    self.cursor_canvas = nil
 
     self.draw_map = false
+    self.draw_cursor = false
 end
 
 function Viewer:notify(event)
@@ -60,6 +63,24 @@ function Viewer:notify(event)
 
         self.draw_map = true
     end
+
+    if event:isInstanceOf(NewCursorPositionEvent) then
+        if not self.cursor_canvas then
+            local size_x, size_y = self.model:get_map():get_size()
+            self.cursor_canvas = love.graphics.newCanvas(size_x * self.tile_size, size_y * self.tile_size)
+        end
+
+        local x, y = event:get_position()
+
+        self.cursor_canvas:renderTo(
+            function ()
+                love.graphics.clear()
+                self:_render_cursor(x, y)
+            end
+        )
+
+        self.draw_cursor = true
+    end
 end
 
 function Viewer:render_all()
@@ -67,6 +88,10 @@ function Viewer:render_all()
 
     if self.draw_map then
         love.graphics.draw(self.map_canvas)
+    end
+
+    if self.draw_cursor then
+        love.graphics.draw(self.cursor_canvas)
     end
 end
 
@@ -112,6 +137,10 @@ function Viewer:_terrain_at(terrain, x, y)
     else
         return 0
     end
+end
+
+function Viewer:_render_cursor(x, y)
+    self.drawer:draw_at("cursor", (x - 1) * self.tile_size, (y - 1) * self.tile_size)
 end
 
 return Viewer

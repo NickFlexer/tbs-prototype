@@ -11,12 +11,14 @@ local TileDrawer = require "view.tile_drawer"
 
 local GameEngine = require "model.game_engine"
 local EventManager = require "event_manager.event_manager"
-local Controller = require "controller.controller"
+local ButtonController = require "controller.button_controller"
+local CursorController = require "controller.cursor_controller"
 local Viewer = require "view.viewer"
 
 
 local engine
-local controller
+local button_controller
+local cursor_controller
 local viewer
 
 
@@ -32,9 +34,16 @@ function love.load()
     engine = GameEngine({
         event_manager = event_manager
     })
-    controller = Controller({
+
+    button_controller = ButtonController({
         event_manager = event_manager
     })
+
+    cursor_controller = CursorController({
+        event_manager = event_manager,
+        tile_size = tile_size
+    })
+
     viewer = Viewer({
         event_manager = event_manager,
         model = engine,
@@ -52,6 +61,7 @@ function love.update(dt)
         engine:init()
     end
 
+    cursor_controller:update()
     engine:update()
 end
 

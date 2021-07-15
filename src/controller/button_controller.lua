@@ -8,11 +8,11 @@ local Input = require "input"
 local QuitEvent = require "event_manager.events.quit_event"
 
 
-local Controller = class("Controller")
+local ButtonController = class("ButtonController")
 
-function Controller:initialize(data)
+function ButtonController:initialize(data)
     if not data.event_manager then
-        error("Controller:initialize(): no data.event_manager argument!")
+        error("ButtonController:initialize(): no data.event_manager argument!")
     end
 
     self.event_manager = data.event_manager
@@ -28,14 +28,14 @@ function Controller:initialize(data)
     self:_set_key_table()
 end
 
-function Controller:notify(event)
+function ButtonController:notify(event)
     -- body
 end
 
-function Controller:_set_key_table()
+function ButtonController:_set_key_table()
     for _, val in ipairs(self.key_table) do
         self.input:bind(val[1], val[2])
     end
 end
 
-return Controller
+return ButtonController
