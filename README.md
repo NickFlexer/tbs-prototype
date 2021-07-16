@@ -1,6 +1,9 @@
 # tbs-prototype
 Prototype of turn based strategy made with Love2d
 
+## screenshots
+![](https://github.com/NickFlexer/tbs-prototype/blob/main/screenshot.png?raw=true)
+
 ## dependencies
 * [middleclass](https://github.com/kikito/middleclass "middleclass")
 * [finita](https://github.com/NickFlexer/finita "finita")
