@@ -10,8 +10,6 @@ local LoadDataState = require "model.states.load_data_state"
 
 local GameLoadedEvent = require "event_manager.events.game_loaded_event"
 
-local Map = require "world.map"
-
 
 local GameEngine = class("GameEngine")
 
@@ -20,6 +18,11 @@ function GameEngine:initialize(data)
         error("GameEngine:initialize(): no data.event_manager argument!")
     end
 
+    if not data.game_data then
+        error("GameEngine:initialize(): no data.game_data argument!")
+    end
+
+    self.game_data = data.game_data
     self.event_manager = data.event_manager
     self.fsm = FSM(self)
 
@@ -30,8 +33,6 @@ function GameEngine:initialize(data)
 
     self.event_manager:register(self)
     self.running = false
-
-    self.map = Map()
 end
 
 function GameEngine:notify(event)
@@ -54,7 +55,7 @@ function GameEngine:is_running()
 end
 
 function GameEngine:update(dt)
-    self.fsm:update(dt)
+    self.fsm:update(dt, self.game_data)
 end
 
 function GameEngine:get_fsm()
@@ -69,8 +70,8 @@ function GameEngine:get_event_manager()
     return self.event_manager
 end
 
-function GameEngine:get_map()
-    return self.map
+function GameEngine:get_data()
+    return self.game_data
 end
 
 return GameEngine

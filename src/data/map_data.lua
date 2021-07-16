@@ -32,4 +32,8 @@ function MapData:get_size()
     return #self.scene_data.world.map[1], #self.scene_data.world.map
 end
 
+function MapData:get_teams()
+    return self.scene_data.teams
+end
+
 return MapData

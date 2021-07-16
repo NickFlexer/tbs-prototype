@@ -15,6 +15,8 @@ local ButtonController = require "controller.button_controller"
 local CursorController = require "controller.cursor_controller"
 local Viewer = require "view.viewer"
 
+local GameData = require "data.game_data"
+
 
 local engine
 local button_controller
@@ -32,7 +34,10 @@ function love.load()
     })
 
     engine = GameEngine({
-        event_manager = event_manager
+        event_manager = event_manager,
+        game_data = GameData({
+            logger = logger
+        })
     })
 
     button_controller = ButtonController({

@@ -51,7 +51,7 @@ end
 function Viewer:notify(event)
     if event:isInstanceOf(UpdateMapViewEvent) then
         if not self.map_canvas then
-            local size_x, size_y = self.model:get_map():get_size()
+            local size_x, size_y = self.model:get_data():get_map():get_size()
             self.map_canvas = love.graphics.newCanvas(size_x * self.tile_size, size_y * self.tile_size)
         end
 
@@ -66,7 +66,7 @@ function Viewer:notify(event)
 
     if event:isInstanceOf(NewCursorPositionEvent) then
         if not self.cursor_canvas then
-            local size_x, size_y = self.model:get_map():get_size()
+            local size_x, size_y = self.model:get_data():get_map():get_size()
             self.cursor_canvas = love.graphics.newCanvas(size_x * self.tile_size, size_y * self.tile_size)
         end
 
@@ -96,7 +96,7 @@ function Viewer:render_all()
 end
 
 function Viewer:_render_map()
-    local all_cells = self.model:get_map():get_all_cells()
+    local all_cells = self.model:get_data():get_map():get_all_cells()
 
     for _, cell_data in ipairs(all_cells) do
         local x = cell_data[1]
@@ -128,11 +128,11 @@ function Viewer:_render_map()
 end
 
 function Viewer:_terrain_at(terrain, x, y)
-    if not self.model:get_map():get_cell(x, y) then
+    if not self.model:get_data():get_map():get_cell(x, y) then
         return 0
     end
 
-    if self.model:get_map():get_cell(x, y):get_terrain() == terrain then
+    if self.model:get_data():get_map():get_cell(x, y):get_terrain() == terrain then
         return 1
     else
         return 0
