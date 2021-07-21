@@ -71,7 +71,13 @@ function TileDrawer:initialize(data)
         {"water_82", 6, 16},
         {"water_90", 7, 16},
 
-        {"cursor", 1, 10}
+        {"cursor", 1, 10},
+
+        {"red_trooper_1", 1, 1},
+        {"red_trooper_2", 2, 1},
+
+        {"blue_trooper_1", 1, 2},
+        {"blue_trooper_2", 2, 2}
     })
 
     self.tile_cutter:set_error_handler(

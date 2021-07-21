@@ -13,10 +13,19 @@ function Cell:initialize(data)
     end
 
     self.terrain = data.terrain
+    self.unit = nil
 end
 
 function Cell:get_terrain()
     return self.terrain
+end
+
+function Cell:set_unit(unit)
+    if not self.unit then
+        self.unit = unit
+    else
+        error("Cell:set_unit() there is unit on cell!")
+    end
 end
 
 return Cell

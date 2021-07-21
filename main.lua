@@ -68,6 +68,7 @@ function love.update(dt)
 
     cursor_controller:update()
     engine:update()
+    viewer:update(dt)
 end
 
 

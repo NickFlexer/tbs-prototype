@@ -3,11 +3,13 @@
 
 
 local class = require "middleclass"
+local Timer = require "hump.timer"
 
 local Terrain = require "data.enums.terrains"
 
 local UpdateMapViewEvent = require "event_manager.events.update_map_view_event"
 local NewCursorPositionEvent = require "event_manager.events.new_cursor_position_event"
+local UpdateUnitsViewEvent = require "event_manager.events.update_units_view_event"
 
 
 local function ternary(cond , T , F)
@@ -42,10 +44,19 @@ function Viewer:initialize(data)
     self.event_manager:register(self)
 
     self.map_canvas = nil
+    self.unit_canvas = nil
     self.cursor_canvas = nil
 
     self.draw_map = false
+    self.draw_units = false
     self.draw_cursor = false
+
+    self.timer = Timer.new()
+    self.max_tick = 2
+end
+
+function Viewer:update(dt)
+    self.timer:update(dt)
 end
 
 function Viewer:notify(event)
@@ -62,6 +73,32 @@ function Viewer:notify(event)
         )
 
         self.draw_map = true
+    end
+
+    if event:isInstanceOf(UpdateUnitsViewEvent) then
+        if not self.unit_canvas then
+            local size_x, size_y = self.model:get_data():get_map():get_size()
+            self.unit_canvas = love.graphics.newCanvas(size_x * self.tile_size, size_y * self.tile_size)
+        end
+
+        self.tick = 1
+
+        self.timer:every(0.5, function ()
+            self.unit_canvas:renderTo(
+                function ()
+                    love.graphics.clear()
+                    self:_render_units(self.tick)
+                end
+            )
+
+            self.tick = self.tick + 1
+
+            if self.tick > self.max_tick then
+                self.tick = 1
+            end
+        end)
+
+        self.draw_units = true
     end
 
     if event:isInstanceOf(NewCursorPositionEvent) then
@@ -88,6 +125,10 @@ function Viewer:render_all()
 
     if self.draw_map then
         love.graphics.draw(self.map_canvas)
+    end
+
+    if self.draw_units then
+        love.graphics.draw(self.unit_canvas)
     end
 
     if self.draw_cursor then
@@ -141,6 +182,17 @@ end
 
 function Viewer:_render_cursor(x, y)
     self.drawer:draw_at("cursor", (x - 1) * self.tile_size, (y - 1) * self.tile_size)
+end
+
+function Viewer:_render_units(tick)
+    local all_units = self.model:get_data():get_all_units()
+
+    for _, unit in ipairs(all_units) do
+        local x, y = unit:get_position()
+        local long_name = unit:get_team():get_name() .. "_" .. unit:get_name() .. "_" .. tick
+
+        self.drawer:draw_at(long_name, (x - 1) * self.tile_size, (y - 1) * self.tile_size)
+    end
 end
 
 return Viewer

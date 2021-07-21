@@ -25,6 +25,46 @@
                         "x" : 4,
                         "y" : 3
                     }
+                },
+                {
+                    "type" : "trooper",
+                    "position" : {
+                        "x" : 4,
+                        "y" : 7
+                    }
+                },
+                {
+                    "type" : "trooper",
+                    "position" : {
+                        "x" : 5,
+                        "y" : 5
+                    }
+                }
+            ]
+        },
+        {
+            "name" : "blue",
+            "units" : [
+                {
+                    "type" : "trooper",
+                    "position" : {
+                        "x" : 12,
+                        "y" : 6
+                    }
+                },
+                {
+                    "type" : "trooper",
+                    "position" : {
+                        "x" : 11,
+                        "y" : 8
+                    }
+                },
+                {
+                    "type" : "trooper",
+                    "position" : {
+                        "x" : 11,
+                        "y" : 3
+                    }
                 }
             ]
         }

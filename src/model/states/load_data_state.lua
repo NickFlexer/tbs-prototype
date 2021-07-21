@@ -8,11 +8,15 @@ local BaseState = require "model.states.base_state"
 
 local GameLoadedEvent = require "event_manager.events.game_loaded_event"
 local UpdateMapViewEvent = require "event_manager.events.update_map_view_event"
+local UpdateUnitsViewEvent = require "event_manager.events.update_units_view_event"
 
 local MapCellFactory = require "data.factories.map_cell_factory"
 local MapData = require "data.map_data"
 
 local TeamFactory = require "data.factories.team_factory"
+local UnitFactory = require "data.factories.unit_factory"
+
+local Units = require "data.enums.units"
 
 
 local LoadDataState = class("LoadDataState", BaseState)
@@ -91,11 +95,25 @@ end
 
 function LoadDataState:_load_units(owner)
     local team_factory = TeamFactory()
+    local unit_factory = UnitFactory()
     local game_data = owner:get_data()
 
-    for _, team in ipairs(self.map_data:get_teams()) do
-        game_data:add_new_team(team_factory:new_team(team))
+    for _, new_team in ipairs(self.map_data:get_teams()) do
+        local team = team_factory:new_team(new_team)
+        game_data:add_new_team(team)
+
+        for _, unit_data in ipairs(new_team.units) do
+            local new_unit = nil
+
+            if unit_data.type == Units.trooper then
+                new_unit = unit_factory:get_trooper(team, unit_data)
+            end
+
+            game_data:add_new_unit(new_unit, team)
+        end
     end
+
+    owner:get_event_manager():post(UpdateUnitsViewEvent())
 end
 
 function LoadDataState:_loading_end(owner)
