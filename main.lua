@@ -27,6 +27,11 @@ local viewer
 function love.load()
     local tile_size = 64
 
+    local shift = {
+        x = 0,
+        y = 32
+    }
+
     local logger = Logger()
 
     local event_manager = EventManager({
@@ -46,7 +51,8 @@ function love.load()
 
     cursor_controller = CursorController({
         event_manager = event_manager,
-        tile_size = tile_size
+        tile_size = tile_size,
+        shift = shift
     })
 
     viewer = Viewer({
@@ -56,7 +62,8 @@ function love.load()
             file_path = "res/img/tileset01.png",
             tile_size = tile_size
         }),
-        tile_size = tile_size
+        tile_size = tile_size,
+        shift = shift
     })
 end
 

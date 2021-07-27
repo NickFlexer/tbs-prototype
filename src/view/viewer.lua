@@ -36,10 +36,15 @@ function Viewer:initialize(data)
         error("Viewer:initialize(): no data.tile_size argument!")
     end
 
+    if not data.shift then
+        error("Viewer:initialize(): no data.shift argument!")
+    end
+
     self.event_manager = data.event_manager
     self.model = data.model
     self.drawer = data.drawer
     self.tile_size = data.tile_size
+    self.shift = data.shift
 
     self.event_manager:register(self)
 
@@ -124,15 +129,15 @@ function Viewer:render_all()
     love.graphics.setColor(1, 1, 1)
 
     if self.draw_map then
-        love.graphics.draw(self.map_canvas)
+        love.graphics.draw(self.map_canvas, self.shift.x, self.shift.y)
     end
 
     if self.draw_units then
-        love.graphics.draw(self.unit_canvas)
+        love.graphics.draw(self.unit_canvas, self.shift.x, self.shift.y)
     end
 
     if self.draw_cursor then
-        love.graphics.draw(self.cursor_canvas)
+        love.graphics.draw(self.cursor_canvas, self.shift.x, self.shift.y)
     end
 end
 

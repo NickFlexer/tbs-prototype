@@ -19,8 +19,13 @@ function CursorController:initialize(data)
         error("CursorController:initialize(): no data.tile_size argument!")
     end
 
+    if not data.shift then
+        error("CursorController:initialize(): no data.shift argument!")
+    end
+
     self.event_manager = data.event_manager
     self.tile_size = data.tile_size
+    self.shift = data.shift
 
     self.event_manager:register(self)
 
@@ -39,10 +44,10 @@ end
 function CursorController:update()
     if self.work then
         local cur_pos_x, cur_pos_y = love.mouse.getPosition()
-        local cur_x = math.floor(cur_pos_x / self.tile_size + 1)
-        local cur_y = math.floor(cur_pos_y / self.tile_size + 1)
+        local cur_x = math.floor((cur_pos_x - self.shift.x) / self.tile_size + 1)
+        local cur_y = math.floor((cur_pos_y - self.shift.y) / self.tile_size + 1)
 
-        if cur_x ~= self.prev_x or cur_y ~= self.prev_y then
+        if cur_x ~= self.prev_x or cur_y ~= self.prev_y and cur_x > 0 and cur_y > 0 then
             self.prev_x = cur_x
             self.prev_y = cur_y
 
