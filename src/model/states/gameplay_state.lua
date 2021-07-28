@@ -7,6 +7,8 @@ local class = require "middleclass"
 local BaseState = require "model.states.base_state"
 
 local QuitEvent = require "event_manager.events.quit_event"
+local StartAnimationEvent = require "event_manager.events.start_animain_event"
+local TurnNumberEvent = require "event_manager.events.turn_number_event"
 
 
 local GameplayState = class("GameplayState", BaseState)
@@ -17,11 +19,17 @@ function GameplayState:initialize(data)
 end
 
 function GameplayState:enter(owner)
-    -- body
+    local logic = owner:get_logic()
+    owner:get_event_manager():post(TurnNumberEvent(logic:get_turn()))
 end
 
 function GameplayState:execute(owner, dt)
-    -- body
+    local logic = owner:get_logic()
+    local action = logic:get_new_action()
+
+    if action then
+        owner:get_event_manager():post(StartAnimationEvent())
+    end
 end
 
 function GameplayState:exit(owner)
