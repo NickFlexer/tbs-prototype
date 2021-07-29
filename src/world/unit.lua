@@ -28,6 +28,8 @@ function Unit:initialize(data)
     self.team = data.team
     self.pos_x = data.x
     self.pos_y = data.y
+
+    self.action_left = true
 end
 
 function Unit:get_name()
@@ -40,6 +42,10 @@ end
 
 function Unit:get_team()
     return self.team
+end
+
+function Unit:is_action_left()
+    return self.action_left
 end
 
 return Unit

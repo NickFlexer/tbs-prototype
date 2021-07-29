@@ -9,6 +9,7 @@ local BaseState = require "model.states.base_state"
 local QuitEvent = require "event_manager.events.quit_event"
 local StartAnimationEvent = require "event_manager.events.start_animain_event"
 local TurnNumberEvent = require "event_manager.events.turn_number_event"
+local CurrentPhaseEvent = require "event_manager.events.current_phase_event"
 
 
 local GameplayState = class("GameplayState", BaseState)
@@ -21,6 +22,7 @@ end
 function GameplayState:enter(owner)
     local logic = owner:get_logic()
     owner:get_event_manager():post(TurnNumberEvent(logic:get_turn()))
+    owner:get_event_manager():post(CurrentPhaseEvent(logic:get_current_team():get_name()))
 end
 
 function GameplayState:execute(owner, dt)

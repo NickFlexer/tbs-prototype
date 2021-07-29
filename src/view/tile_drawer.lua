@@ -73,6 +73,8 @@ function TileDrawer:initialize(data)
 
         {"cursor", 1, 10},
 
+        {"ready_to_go", 1, 9},
+
         {"red_trooper_1", 1, 1},
         {"red_trooper_2", 2, 1},
 

@@ -15,7 +15,8 @@ end
 
 function TeamFactory:new_team(team_data)
     local team = Team({
-        name = team_data.name
+        name = team_data.name,
+        owner = team_data.owner
     })
 
     return team

@@ -97,10 +97,12 @@ function LoadDataState:_load_units(owner)
     local team_factory = TeamFactory()
     local unit_factory = UnitFactory()
     local game_data = owner:get_data()
+    local logic = owner:get_logic()
 
     for _, new_team in ipairs(self.map_data:get_teams()) do
         local team = team_factory:new_team(new_team)
         game_data:add_new_team(team)
+        logic:add_new_team(team)
 
         for _, unit_data in ipairs(new_team.units) do
             local new_unit = nil

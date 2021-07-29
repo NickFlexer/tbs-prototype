@@ -15,6 +15,17 @@ function GameLogic:initialize(data)
     self.logger = data.logger
 
     self.turn = 1
+    self.cur_team_num = 1
+
+    self.teams = {}
+end
+
+function GameLogic:add_new_team(team)
+    table.insert(self.teams, team)
+end
+
+function GameLogic:get_current_team()
+    return self.teams[self.cur_team_num]
 end
 
 function GameLogic:get_new_action()

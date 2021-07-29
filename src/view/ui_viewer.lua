@@ -6,6 +6,7 @@ local class = require "middleclass"
 local suit = require "suit"
 
 local TurnNumberEvent = require "event_manager.events.turn_number_event"
+local CurrentPhaseEvent = require "event_manager.events.current_phase_event"
 
 
 local UIViewer = class("UIViewer")
@@ -24,11 +25,16 @@ function UIViewer:initialize(data)
     self.size = 32
 
     self.turn_number = nil
+    self.phase_name = nil
 end
 
 function UIViewer:notify(event)
     if event:isInstanceOf(TurnNumberEvent) then
         self.turn_number = event:get_number()
+    end
+
+    if event:isInstanceOf(CurrentPhaseEvent) then
+        self.phase_name = event:get_name()
     end
 end
 
@@ -41,7 +47,7 @@ function UIViewer:update(dt)
     )
 
     self.ui:Label(
-        "phase: red team",
+        "phase: " .. tostring(self.phase_name) .. " team",
         {font = self.font},
         self.size * 3, 0,
         self.size * 8, self.size

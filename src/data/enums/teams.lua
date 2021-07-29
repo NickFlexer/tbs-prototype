@@ -3,7 +3,8 @@
 
 
 local Teams = {
-    red = "red"
+    red = "red",
+    blue = "blue"
 }
 
 return Teams

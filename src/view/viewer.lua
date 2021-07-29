@@ -6,6 +6,7 @@ local class = require "middleclass"
 local Timer = require "hump.timer"
 
 local Terrain = require "data.enums.terrains"
+local TeamOwner = require "data.enums.team_owner"
 
 local UpdateMapViewEvent = require "event_manager.events.update_map_view_event"
 local NewCursorPositionEvent = require "event_manager.events.new_cursor_position_event"
@@ -195,6 +196,10 @@ function Viewer:_render_units(tick)
     for _, unit in ipairs(all_units) do
         local x, y = unit:get_position()
         local long_name = unit:get_team():get_name() .. "_" .. unit:get_name() .. "_" .. tick
+
+        if unit:get_team():get_owner() == TeamOwner.human and unit:is_action_left() then
+            self.drawer:draw_at("ready_to_go", (x - 1) * self.tile_size, (y - 1) * self.tile_size)
+        end
 
         self.drawer:draw_at(long_name, (x - 1) * self.tile_size, (y - 1) * self.tile_size)
     end
