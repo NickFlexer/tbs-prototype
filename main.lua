@@ -19,6 +19,8 @@ local UIViewer = require "view.ui_viewer"
 local GameData = require "data.game_data"
 local GameLogic = require "logic.game_logic"
 
+local HumanTeamControl = require "logic.team_control.human_team_control"
+
 
 local engine
 local button_controller
@@ -47,7 +49,9 @@ function love.load()
             logger = logger
         }),
         game_logic = GameLogic({
-            logger = logger
+            logger = logger,
+            event_manager = event_manager,
+            human_control = HumanTeamControl()
         })
     })
 
@@ -83,7 +87,7 @@ function love.update(dt)
         engine:init()
     end
 
-    cursor_controller:update()
+    cursor_controller:update(dt)
     engine:update()
     viewer:update(dt)
     ui_viewer:update(dt)
@@ -93,4 +97,8 @@ end
 function love.draw()
     viewer:render_all()
     ui_viewer:render_all()
+end
+
+function love.mousepressed(x, y, button, istouch)
+    cursor_controller:mouse_pressed()
 end

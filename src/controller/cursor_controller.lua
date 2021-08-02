@@ -6,6 +6,7 @@ local class = require "middleclass"
 
 local NewCursorPositionEvent = require "event_manager.events.new_cursor_position_event"
 local GameLoadedEvent = require "event_manager.events.game_loaded_event"
+local PositionPressedEvent = require "event_manager.events.position_pressed_event"
 
 
 local CursorController = class("CursorController")
@@ -41,7 +42,7 @@ function CursorController:notify(event)
     end
 end
 
-function CursorController:update()
+function CursorController:update(dt)
     if self.work then
         local cur_pos_x, cur_pos_y = love.mouse.getPosition()
         local cur_x = math.floor((cur_pos_x - self.shift.x) / self.tile_size + 1)
@@ -54,6 +55,10 @@ function CursorController:update()
             self.event_manager:post(NewCursorPositionEvent(cur_x, cur_y))
         end
     end
+end
+
+function CursorController:mouse_pressed()
+    self.event_manager:post(PositionPressedEvent(self.prev_x, self.prev_y))
 end
 
 return CursorController
