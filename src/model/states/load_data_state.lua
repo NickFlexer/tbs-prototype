@@ -22,6 +22,12 @@ local Units = require "data.enums.units"
 local LoadDataState = class("LoadDataState", BaseState)
 
 function LoadDataState:initialize(data)
+    if not data.terrain_data then
+        error("GameEngine:initialize(): no data.terrain_data argument!")
+    end
+
+    self.terrain_data = data.terrain_data
+
     BaseState.initialize(self)
     self:check_abstract_methods(LoadDataState)
 
@@ -57,7 +63,9 @@ function LoadDataState:notify(owner, event)
 end
 
 function LoadDataState:_load_map(owner)
-    local terrain_factory = MapCellFactory()
+    local terrain_factory = MapCellFactory({
+        terrain_data = self.terrain_data
+    })
 
     self.map_data = MapData({
         file_path = "res/map/test_map.json"

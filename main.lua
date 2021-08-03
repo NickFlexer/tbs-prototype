@@ -21,6 +21,8 @@ local GameLogic = require "logic.game_logic"
 
 local HumanTeamControl = require "logic.team_control.human_team_control"
 
+local TerrainData = require "data.terrain_data"
+
 
 local engine
 local button_controller
@@ -39,6 +41,11 @@ function love.load()
 
     local logger = Logger()
 
+    local tile_drawer = TileDrawer({
+        file_path = "res/img/tileset01.png",
+        tile_size = tile_size
+    })
+
     local event_manager = EventManager({
         logger = logger
     })
@@ -52,6 +59,9 @@ function love.load()
             logger = logger,
             event_manager = event_manager,
             human_control = HumanTeamControl()
+        }),
+        terrain_data = TerrainData({
+            file_path = "res/data/terrain.json"
         })
     })
 
@@ -68,16 +78,19 @@ function love.load()
     viewer = Viewer({
         event_manager = event_manager,
         model = engine,
-        drawer = TileDrawer({
-            file_path = "res/img/tileset01.png",
-            tile_size = tile_size
-        }),
+        drawer = tile_drawer,
         tile_size = tile_size,
         shift = shift
     })
 
     ui_viewer = UIViewer({
-        event_manager = event_manager
+        event_manager = event_manager,
+        model = engine,
+        window_size = {
+            x = 16 * tile_size,
+            y = 12 * tile_size
+        },
+        drawer = tile_drawer
     })
 end
 

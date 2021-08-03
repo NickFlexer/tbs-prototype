@@ -1,0 +1,8 @@
+{
+    "ground": {
+        "mv_coast" : 2
+    },
+    "water": {
+        "mv_coast" : 5
+    }
+}

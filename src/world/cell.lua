@@ -12,12 +12,21 @@ function Cell:initialize(data)
         error("Cell:initialize(): no data.terrain argument!")
     end
 
+    if not data.move_cost then
+        error("Cell:initialize(): no data.move_cost argument!")
+    end
+
     self.terrain = data.terrain
+    self.move_cost = data.move_cost
     self.unit = nil
 end
 
 function Cell:get_terrain()
     return self.terrain
+end
+
+function Cell:get_move_cost()
+    return self.move_cost
 end
 
 function Cell:set_unit(unit)
