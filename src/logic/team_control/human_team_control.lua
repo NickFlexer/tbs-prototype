@@ -10,6 +10,7 @@ local BaseTeamControl = require "logic.team_control.base_team_control"
 local WaitSelectionState = require "logic.team_control.human_control_states.wait_selection_state"
 local HandleMoveState = require "logic.team_control.human_control_states.handle_move_state"
 
+local UnselectUnitEvent = require "event_manager.events.unselect_unit_event"
 local PlayerUnitSelectedEvent = require "event_manager.events.player_unit_selected_event"
 
 
@@ -46,6 +47,12 @@ function HumanTeamControl:notify(event)
         event:get_unit():select()
 
         self.fsm:change_state(self.states.handle_move)
+    end
+
+    if event:isInstanceOf(UnselectUnitEvent) then
+        self.controlled_team:unselect_all()
+
+        self.fsm:change_state(self.states.wait)
     end
 
     if self.fsm:has_state() then

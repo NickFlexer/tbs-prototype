@@ -36,18 +36,27 @@ function Map:get_cell(x, y)
     return self.map:get_cell(x, y)
 end
 
+function Map:remove_move_area()
+    for _, _, cell in self.map:iterate() do
+        cell:clear_move_potention()
+    end
+end
+
 function Map:solve_move_area(start_pos_x, start_pos_y, move)
     -- prepare
+    self:remove_move_area()
+
     for x, y, cell in self.map:iterate() do
+        cell.cur_move = nil
+        cell.iter = nil
+        cell.active = nil
+
         if x == start_pos_x and y == start_pos_y then
             cell.cur_move = move
             cell.iter = 1
         else
             cell.active = false
-            cell.iterate = 0
         end
-
-        cell:clear_move_potention()
     end
 
     local x_shift = {1, 0, -1, 0}
@@ -85,7 +94,7 @@ function Map:solve_move_area(start_pos_x, start_pos_y, move)
 end
 
 function Map:_can_go(x, y, dx, dy)
-    if self.map:get_cell(dx, dy) then
+    if self.map:is_valid(dx, dy) and self.map:get_cell(dx, dy) then
         if self.map:get_cell(dx, dy).cur_move then
             return false
         end

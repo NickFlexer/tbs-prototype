@@ -7,6 +7,9 @@ local class = require "middleclass"
 local BaseState = require "logic.team_control.human_control_states.base_state"
 
 local UpdateMoveAreaEvent = require "event_manager.events.update_move_area_event"
+local PositionPressedEvent = require "event_manager.events.position_pressed_event"
+local PlayerUnitSelectedEvent = require "event_manager.events.player_unit_selected_event"
+local UnselectUnitEvent = require "event_manager.events.unselect_unit_event"
 
 
 local HandleMoveState = class("HandleMoveState", BaseState)
@@ -22,6 +25,7 @@ function HandleMoveState:initialize(data)
     self.logger = data.logger
 
     self.compute_move_area = false
+    self.chech_new_position = nil
 end
 
 function HandleMoveState:enter(owner)
@@ -41,6 +45,19 @@ function HandleMoveState:execute(owner, data)
 
         data.event_manager:post(UpdateMoveAreaEvent())
     end
+
+    if self.chech_new_position then
+        local map = data.game_data:get_map()
+        local cell = map:get_cell(self.chech_new_position.x, self.chech_new_position.y)
+
+        if cell:get_unit() and cell:get_unit():get_team() == data.team  then
+            data.event_manager:post(PlayerUnitSelectedEvent(cell:get_unit()))
+        elseif not cell:is_move_potention() then
+            data.event_manager:post(UnselectUnitEvent())
+        end
+
+        self.chech_new_position = nil
+    end
 end
 
 function HandleMoveState:exit(owner)
@@ -48,6 +65,10 @@ function HandleMoveState:exit(owner)
 end
 
 function HandleMoveState:notify(event)
+    if event:isInstanceOf(PositionPressedEvent) then
+        local x, y = event:get_position()
+        self.chech_new_position = {x = x, y = y}
+    end
 end
 
 return HandleMoveState

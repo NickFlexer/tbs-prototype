@@ -12,6 +12,7 @@ local UpdateMapViewEvent = require "event_manager.events.update_map_view_event"
 local NewCursorPositionEvent = require "event_manager.events.new_cursor_position_event"
 local UpdateUnitsViewEvent = require "event_manager.events.update_units_view_event"
 local UpdateMoveAreaEvent = require "event_manager.events.update_move_area_event"
+local UnselectUnitEvent = require "event_manager.events.unselect_unit_event"
 
 
 local function ternary(cond , T , F)
@@ -142,6 +143,15 @@ function Viewer:notify(event)
         )
 
         self.draw_move_area = true
+    end
+
+    if event:isInstanceOf(UnselectUnitEvent) then
+        print("!")
+        self.move_area_canvas:renderTo(
+            function ()
+                love.graphics.clear()
+            end
+        )
     end
 end
 

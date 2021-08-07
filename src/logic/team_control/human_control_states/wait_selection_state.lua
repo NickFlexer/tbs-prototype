@@ -23,13 +23,20 @@ function WaitSelectionState:initialize(data)
     self.logger = data.logger
 
     self.check = nil
+    self.ent = false
 end
 
 function WaitSelectionState:enter(owner)
-    print("!")
+    self.ent = true
 end
 
 function WaitSelectionState:execute(owner, data)
+    if self.ent then
+        self.ent = false
+
+        data.game_data:get_map():remove_move_area()
+    end
+
     if self.check then
         local map = data.game_data:get_map()
         local cell = map:get_cell(self.check.x, self.check.y)
