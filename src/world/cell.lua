@@ -19,6 +19,7 @@ function Cell:initialize(data)
     self.terrain = data.terrain
     self.move_cost = data.move_cost
     self.unit = nil
+    self.move_potention = false
 end
 
 function Cell:get_terrain()
@@ -35,6 +36,22 @@ function Cell:set_unit(unit)
     else
         error("Cell:set_unit() there is unit on cell!")
     end
+end
+
+function Cell:get_unit()
+    return self.unit
+end
+
+function Cell:set_move_potention()
+    self.move_potention = true
+end
+
+function Cell:clear_move_potention()
+    self.move_potention = false
+end
+
+function Cell:is_move_potention()
+    return self.move_potention
 end
 
 return Cell

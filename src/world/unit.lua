@@ -24,12 +24,19 @@ function Unit:initialize(data)
         error("Unit:initialize(): no data.y argument!")
     end
 
+    if not data.move then
+        error("Unit:initialize(): no data.move argument!")
+    end
+
     self.name = data.name
     self.team = data.team
     self.pos_x = data.x
     self.pos_y = data.y
+    self.move = data.move
 
     self.action_left = true
+
+    self.selected = false
 end
 
 function Unit:get_name()
@@ -46,6 +53,22 @@ end
 
 function Unit:is_action_left()
     return self.action_left
+end
+
+function Unit:get_move()
+    return self.move
+end
+
+function Unit:select()
+    self.selected = true
+end
+
+function Unit:unselect()
+    self.selected = false
+end
+
+function Unit:is_selected()
+    return self.selected
 end
 
 return Unit

@@ -22,6 +22,7 @@ local GameLogic = require "logic.game_logic"
 local HumanTeamControl = require "logic.team_control.human_team_control"
 
 local TerrainData = require "data.terrain_data"
+local UnitData = require "data.unit_data"
 
 
 local engine
@@ -58,10 +59,15 @@ function love.load()
         game_logic = GameLogic({
             logger = logger,
             event_manager = event_manager,
-            human_control = HumanTeamControl()
+            human_control = HumanTeamControl({
+                logger = logger
+            })
         }),
         terrain_data = TerrainData({
             file_path = "res/data/terrain.json"
+        }),
+        unit_data = UnitData({
+            file_path = "res/data/units.json"
         })
     })
 

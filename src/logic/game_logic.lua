@@ -44,10 +44,13 @@ end
 
 function GameLogic:get_new_action(game_data)
     if self:get_current_team():get_owner() == TeamOwner.human then
+        self.human_control:set_team(self:get_current_team())
+
         self.human_control:update({
-            data = game_data,
+            game_data = game_data,
             logic = self,
-            team = self:get_current_team()
+            team = self:get_current_team(),
+            event_manager = self.event_manager
         })
     end
 

@@ -23,10 +23,15 @@ local LoadDataState = class("LoadDataState", BaseState)
 
 function LoadDataState:initialize(data)
     if not data.terrain_data then
-        error("GameEngine:initialize(): no data.terrain_data argument!")
+        error("LoadDataState:initialize(): no data.terrain_data argument!")
+    end
+
+    if not data.unit_data then
+        error("LoadDataState:initialize(): no data.unit_data argument!")
     end
 
     self.terrain_data = data.terrain_data
+    self.unit_data = data.unit_data
 
     BaseState.initialize(self)
     self:check_abstract_methods(LoadDataState)
@@ -103,7 +108,7 @@ end
 
 function LoadDataState:_load_units(owner)
     local team_factory = TeamFactory()
-    local unit_factory = UnitFactory()
+    local unit_factory = UnitFactory({unit_data = self.unit_data})
     local game_data = owner:get_data()
     local logic = owner:get_logic()
 

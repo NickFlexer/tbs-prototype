@@ -72,6 +72,7 @@ function TileDrawer:initialize(data)
         {"water_90", 7, 16},
 
         {"cursor", 1, 10},
+        {"can_move_marker", 13, 10},
 
         {"ready_to_go", 1, 9},
 

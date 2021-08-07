@@ -37,4 +37,18 @@ function Team:get_units()
     return self.units
 end
 
+function Team:unselect_all()
+    for _, unit in ipairs(self.units) do
+        unit:unselect()
+    end
+end
+
+function Team:get_selected_unit()
+    for _, unit in ipairs(self.units) do
+        if unit:is_selected() then
+            return unit
+        end
+    end
+end
+
 return Team

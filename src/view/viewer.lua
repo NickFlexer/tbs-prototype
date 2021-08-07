@@ -11,6 +11,7 @@ local TeamOwner = require "data.enums.team_owner"
 local UpdateMapViewEvent = require "event_manager.events.update_map_view_event"
 local NewCursorPositionEvent = require "event_manager.events.new_cursor_position_event"
 local UpdateUnitsViewEvent = require "event_manager.events.update_units_view_event"
+local UpdateMoveAreaEvent = require "event_manager.events.update_move_area_event"
 
 
 local function ternary(cond , T , F)
@@ -52,10 +53,12 @@ function Viewer:initialize(data)
     self.map_canvas = nil
     self.unit_canvas = nil
     self.cursor_canvas = nil
+    self.move_area_canvas = nil
 
     self.draw_map = false
     self.draw_units = false
     self.draw_cursor = false
+    self.draw_move_area = false
 
     self.timer = Timer.new()
     self.max_tick = 2
@@ -124,6 +127,22 @@ function Viewer:notify(event)
 
         self.draw_cursor = true
     end
+
+    if event:isInstanceOf(UpdateMoveAreaEvent) then
+        if not self.move_area_canvas then
+            local size_x, size_y = self.model:get_data():get_map():get_size()
+            self.move_area_canvas = love.graphics.newCanvas(size_x * self.tile_size, size_y * self.tile_size)
+        end
+
+        self.move_area_canvas:renderTo(
+            function ()
+                love.graphics.clear()
+                self:_render_move_area()
+            end
+        )
+
+        self.draw_move_area = true
+    end
 end
 
 function Viewer:render_all()
@@ -131,6 +150,10 @@ function Viewer:render_all()
 
     if self.draw_map then
         love.graphics.draw(self.map_canvas, self.shift.x, self.shift.y)
+    end
+
+    if self.draw_move_area then
+        love.graphics.draw(self.move_area_canvas, self.shift.x, self.shift.y)
     end
 
     if self.draw_units then
@@ -202,6 +225,20 @@ function Viewer:_render_units(tick)
         end
 
         self.drawer:draw_at(long_name, (x - 1) * self.tile_size, (y - 1) * self.tile_size)
+    end
+end
+
+function Viewer:_render_move_area()
+    local all_cells = self.model:get_data():get_map():get_all_cells()
+
+    for _, cell_data in ipairs(all_cells) do
+        local x = cell_data[1]
+        local y = cell_data[2]
+        local cell = cell_data[3]
+
+        if cell:is_move_potention() then
+            self.drawer:draw_at("can_move_marker", (x - 1) * self.tile_size, (y - 1) * self.tile_size)
+        end
     end
 end
 

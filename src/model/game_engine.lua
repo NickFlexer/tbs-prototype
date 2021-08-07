@@ -32,16 +32,22 @@ function GameEngine:initialize(data)
         error("GameEngine:initialize(): no data.terrain_data argument!")
     end
 
+    if not data.unit_data then
+        error("GameEngine:initialize(): no data.terrain_data argument!")
+    end
+
     self.game_data = data.game_data
     self.event_manager = data.event_manager
     self.game_logic = data.game_logic
     self.terrain_data = data.terrain_data
+    self.unit_data = data.unit_data
 
     self.fsm = FSM(self)
 
     self.states = {
         load_data = LoadDataState({
-            terrain_data = self.terrain_data
+            terrain_data = self.terrain_data,
+            unit_data = self.unit_data
         }),
         gameplay = GameplayState(),
         animation = AnimationState()
