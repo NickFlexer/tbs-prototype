@@ -13,3 +13,4 @@ Prototype of turn based strategy made with Love2d
 * [json.lua](https://github.com/rxi/json.lua "json.lua")
 * [tile-cutter](https://github.com/NickFlexer/tile-cutter "tile-cutter")
 * [hump](https://github.com/vrld/hump "hump")
+* [lua-star](https://github.com/wesleywerner/lua-star "lua-star")

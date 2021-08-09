@@ -13,6 +13,8 @@ local NewCursorPositionEvent = require "event_manager.events.new_cursor_position
 local UpdateUnitsViewEvent = require "event_manager.events.update_units_view_event"
 local UpdateMoveAreaEvent = require "event_manager.events.update_move_area_event"
 local UnselectUnitEvent = require "event_manager.events.unselect_unit_event"
+local NewPathEvent = require "event_manager.events.new_path_event"
+local RemovePathEvent = require "event_manager.events.remove_path_event"
 
 
 local function ternary(cond , T , F)
@@ -55,11 +57,13 @@ function Viewer:initialize(data)
     self.unit_canvas = nil
     self.cursor_canvas = nil
     self.move_area_canvas = nil
+    self.path_canvas = nil
 
     self.draw_map = false
     self.draw_units = false
     self.draw_cursor = false
     self.draw_move_area = false
+    self.draw_path = false
 
     self.timer = Timer.new()
     self.max_tick = 2
@@ -146,12 +150,31 @@ function Viewer:notify(event)
     end
 
     if event:isInstanceOf(UnselectUnitEvent) then
-        print("!")
         self.move_area_canvas:renderTo(
             function ()
                 love.graphics.clear()
             end
         )
+    end
+
+    if event:isInstanceOf(NewPathEvent) then
+        if not self.path_canvas then
+            local size_x, size_y = self.model:get_data():get_map():get_size()
+            self.path_canvas = love.graphics.newCanvas(size_x * self.tile_size, size_y * self.tile_size)
+        end
+
+        self.path_canvas:renderTo(
+            function ()
+                love.graphics.clear()
+                self:_render_path(event:get_path())
+            end
+        )
+
+        self.draw_path = true
+    end
+
+    if event:isInstanceOf(RemovePathEvent) then
+        self.draw_path = false
     end
 end
 
@@ -164,6 +187,10 @@ function Viewer:render_all()
 
     if self.draw_move_area then
         love.graphics.draw(self.move_area_canvas, self.shift.x, self.shift.y)
+    end
+
+    if self.draw_path then
+        love.graphics.draw(self.path_canvas, self.shift.x, self.shift.y)
     end
 
     if self.draw_units then
@@ -250,6 +277,31 @@ function Viewer:_render_move_area()
             self.drawer:draw_at("can_move_marker", (x - 1) * self.tile_size, (y - 1) * self.tile_size)
         end
     end
+end
+
+function Viewer:_render_path(path)
+    for i, point in ipairs(path) do
+        local T = self:_path_at(path, point.x, point.y - 1)
+        local L = self:_path_at(path, point.x - 1, point.y)
+        local R = self:_path_at(path, point.x + 1, point.y)
+        local B = self:_path_at(path, point.x, point.y + 1)
+
+        local neigh_data = T * 1 + L * 2 + R * 4 + B * 8
+
+        if i ~= 1 then
+            self.drawer:draw_at("path_" .. tostring(neigh_data), (point.x - 1) * self.tile_size, (point.y - 1) * self.tile_size)
+        end
+    end
+end
+
+function Viewer:_path_at(path, x, y)
+    for _, point in ipairs(path) do
+        if point.x == x and point.y == y then
+            return 1
+        end
+    end
+
+    return 0
 end
 
 return Viewer

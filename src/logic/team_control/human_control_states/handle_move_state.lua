@@ -11,6 +11,8 @@ local PositionPressedEvent = require "event_manager.events.position_pressed_even
 local PlayerUnitSelectedEvent = require "event_manager.events.player_unit_selected_event"
 local UnselectUnitEvent = require "event_manager.events.unselect_unit_event"
 local NewCursorPositionEvent = require "event_manager.events.new_cursor_position_event"
+local NewPathEvent = require "event_manager.events.new_path_event"
+local RemovePathEvent = require "event_manager.events.remove_path_event"
 
 
 local HandleMoveState = class("HandleMoveState", BaseState)
@@ -64,6 +66,20 @@ function HandleMoveState:execute(owner, data)
     end
 
     if self.solve_path then
+        local map = data.game_data:get_map()
+        local unit = data.team:get_selected_unit()
+
+        if map:get_cell(self.solve_path.x, self.solve_path.y) and map:get_cell(self.solve_path.x, self.solve_path.y):is_move_potention() then
+            local start_x, start_y = unit:get_position()
+            local path = map:get_path(start_x, start_y, self.solve_path.x, self.solve_path.y)
+
+            if path then
+                data.event_manager:post(NewPathEvent(path))
+            end
+        else
+            data.event_manager:post(RemovePathEvent())
+        end
+
         self.solve_path = nil
     end
 end

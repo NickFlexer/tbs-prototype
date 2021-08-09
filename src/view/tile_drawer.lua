@@ -76,6 +76,17 @@ function TileDrawer:initialize(data)
 
         {"ready_to_go", 1, 9},
 
+        {"path_1", 5, 10},
+        {"path_2", 3, 10},
+        {"path_4", 4, 10},
+        {"path_8", 6, 10},
+        {"path_6", 7, 10},
+        {"path_9", 8, 10},
+        {"path_3", 12, 10},
+        {"path_5", 11, 10},
+        {"path_10", 10, 10},
+        {"path_12", 9, 10},
+
         {"red_trooper_1", 1, 1},
         {"red_trooper_2", 2, 1},
 

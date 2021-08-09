@@ -4,6 +4,7 @@
 
 local class = require "middleclass"
 local Grid = require "grid"
+local luastar = require "lua-star"
 
 
 local Map = class("Map")
@@ -91,6 +92,21 @@ function Map:solve_move_area(start_pos_x, start_pos_y, move)
             cell:set_move_potention()
         end
     end
+end
+
+
+function Map:get_path(x0, y0, x1, y1)
+    local start = {x = x0, y = y0}
+    local goal = {x = x1, y = y1}
+    local width, height = self.map:get_size()
+
+    local path = luastar:find(width, height, start, goal, self._position_is_open, false, true)
+
+    return path
+end
+
+function Map:_position_is_open(x, y)
+    return true
 end
 
 function Map:_can_go(x, y, dx, dy)
