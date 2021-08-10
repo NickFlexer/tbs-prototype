@@ -30,8 +30,13 @@ function LoadDataState:initialize(data)
         error("LoadDataState:initialize(): no data.unit_data argument!")
     end
 
+    if not data.tile_size then
+        error("LoadDataState:initialize(): no data.tile_size argument!")
+    end
+
     self.terrain_data = data.terrain_data
     self.unit_data = data.unit_data
+    self.tile_size = data.tile_size
 
     BaseState.initialize(self)
     self:check_abstract_methods(LoadDataState)
@@ -122,9 +127,13 @@ function LoadDataState:_load_units(owner)
 
             if unit_data.type == Units.trooper then
                 new_unit = unit_factory:get_trooper(team, unit_data)
+                new_unit:set_position(
+                    (unit_data.position.x - 1) * self.tile_size,
+                    (unit_data.position.y - 1) * self.tile_size
+                )
             end
 
-            game_data:add_new_unit(new_unit, team)
+            game_data:add_new_unit(new_unit, team, unit_data.position.x, unit_data.position.y)
         end
     end
 

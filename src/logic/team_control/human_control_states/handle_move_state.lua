@@ -14,6 +14,8 @@ local NewCursorPositionEvent = require "event_manager.events.new_cursor_position
 local NewPathEvent = require "event_manager.events.new_path_event"
 local RemovePathEvent = require "event_manager.events.remove_path_event"
 
+local MoveAction = require "actions.move_action"
+
 
 local HandleMoveState = class("HandleMoveState", BaseState)
 
@@ -43,7 +45,7 @@ function HandleMoveState:execute(owner, data)
         local unit = data.team:get_selected_unit()
         local map = data.game_data:get_map()
 
-        local x, y = unit:get_position()
+        local x, y = map:get_unit_position(unit)
 
         map:solve_move_area(x, y, unit:get_move())
 
@@ -53,6 +55,7 @@ function HandleMoveState:execute(owner, data)
     if self.chech_new_position then
         local map = data.game_data:get_map()
         local cell = map:get_cell(self.chech_new_position.x, self.chech_new_position.y)
+        local unit = data.team:get_selected_unit()
 
         if cell:get_unit() and cell:get_unit():is_selected() then
             data.event_manager:post(UnselectUnitEvent())
@@ -60,6 +63,19 @@ function HandleMoveState:execute(owner, data)
             data.event_manager:post(PlayerUnitSelectedEvent(cell:get_unit()))
         elseif not cell:is_move_potention() then
             data.event_manager:post(UnselectUnitEvent())
+        elseif cell:is_move_potention() then
+            local start_x, start_y = map:get_unit_position(unit)
+            local path = map:get_path(start_x, start_y, self.chech_new_position.x, self.chech_new_position.y)
+
+            if path then
+                data.event_manager:post(UnselectUnitEvent())
+                data.event_manager:post(RemovePathEvent())
+
+                data.logic:add_action(MoveAction({
+                    unit = unit,
+                    path = path
+                }))
+            end
         end
 
         self.chech_new_position = nil
@@ -70,7 +86,7 @@ function HandleMoveState:execute(owner, data)
         local unit = data.team:get_selected_unit()
 
         if map:get_cell(self.solve_path.x, self.solve_path.y) and map:get_cell(self.solve_path.x, self.solve_path.y):is_move_potention() then
-            local start_x, start_y = unit:get_position()
+            local start_x, start_y = map:get_unit_position(unit)
             local path = map:get_path(start_x, start_y, self.solve_path.x, self.solve_path.y)
 
             if path then

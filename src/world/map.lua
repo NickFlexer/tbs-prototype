@@ -37,6 +37,14 @@ function Map:get_cell(x, y)
     return self.map:get_cell(x, y)
 end
 
+function Map:get_unit_position(unit)
+    for x, y, cell in self.map:iterate() do
+        if cell:get_unit() and cell:get_unit() == unit then
+            return x, y
+        end
+    end
+end
+
 function Map:remove_move_area()
     for _, _, cell in self.map:iterate() do
         cell:clear_move_potention()

@@ -23,8 +23,6 @@ function UnitFactory:get_trooper(team, unit_data)
     local trooper = Unit({
         name = Units.trooper,
         team = team,
-        x = unit_data.position.x,
-        y = unit_data.position.y,
         move = self.unit_data:get(Units.trooper).move
     })
 

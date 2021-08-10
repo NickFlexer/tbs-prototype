@@ -68,7 +68,8 @@ function love.load()
         }),
         unit_data = UnitData({
             file_path = "res/data/units.json"
-        })
+        }),
+        tile_size = tile_size
     })
 
     button_controller = ButtonController({
@@ -107,7 +108,7 @@ function love.update(dt)
     end
 
     cursor_controller:update(dt)
-    engine:update()
+    engine:update(dt)
     viewer:update(dt)
     ui_viewer:update(dt)
 end

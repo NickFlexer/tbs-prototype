@@ -32,6 +32,7 @@ function GameLogic:initialize(data)
     self.cur_team_num = 1
 
     self.teams = {}
+    self.actins = {}
 end
 
 function GameLogic:add_new_team(team)
@@ -42,7 +43,7 @@ function GameLogic:get_current_team()
     return self.teams[self.cur_team_num]
 end
 
-function GameLogic:get_new_action(game_data)
+function GameLogic:update(game_data)
     if self:get_current_team():get_owner() == TeamOwner.human then
         self.human_control:set_team(self:get_current_team())
 
@@ -54,7 +55,7 @@ function GameLogic:get_new_action(game_data)
         })
     end
 
-    return false
+    return next(self.actins)
 end
 
 function GameLogic:get_turn()
@@ -65,6 +66,16 @@ function GameLogic:notify(event)
     if self:get_current_team() and self:get_current_team():get_owner() == TeamOwner.human then
         self.human_control:notify(event)
     end
+end
+
+function GameLogic:add_action(action)
+    self.logger:debug("GameLogic: add action " .. tostring(action))
+
+    table.insert(self.actins, action)
+end
+
+function GameLogic:get_next_action()
+    return table.remove(self.actins, 1)
 end
 
 return GameLogic

@@ -31,9 +31,7 @@ function GameData:add_new_team(team)
     self.logger:debug("GameData: insert new team [" .. team:get_name() .. "] controlled by [" .. tostring(team:get_owner()) .. "]")
 end
 
-function GameData:add_new_unit(unit, team)
-    local x, y = unit:get_position()
-
+function GameData:add_new_unit(unit, team, x, y)
     team:add_unit(unit)
     self.map:get_cell(x, y):set_unit(unit)
 

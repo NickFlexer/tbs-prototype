@@ -36,18 +36,24 @@ function GameEngine:initialize(data)
         error("GameEngine:initialize(): no data.terrain_data argument!")
     end
 
+    if not data.tile_size then
+        error("GameEngine:initialize(): no data.tile_size argument!")
+    end
+
     self.game_data = data.game_data
     self.event_manager = data.event_manager
     self.game_logic = data.game_logic
     self.terrain_data = data.terrain_data
     self.unit_data = data.unit_data
+    self.tile_size = data.tile_size
 
     self.fsm = FSM(self)
 
     self.states = {
         load_data = LoadDataState({
             terrain_data = self.terrain_data,
-            unit_data = self.unit_data
+            unit_data = self.unit_data,
+            tile_size = self.tile_size
         }),
         gameplay = GameplayState(),
         animation = AnimationState()
@@ -81,7 +87,7 @@ function GameEngine:is_running()
 end
 
 function GameEngine:update(dt)
-    self.fsm:update(dt, self.game_data)
+    self.fsm:update(dt, self.game_data, self.game_logic, self.tile_size)
 end
 
 function GameEngine:get_fsm()

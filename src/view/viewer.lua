@@ -95,22 +95,12 @@ function Viewer:notify(event)
             self.unit_canvas = love.graphics.newCanvas(size_x * self.tile_size, size_y * self.tile_size)
         end
 
-        self.tick = 1
-
-        self.timer:every(0.5, function ()
-            self.unit_canvas:renderTo(
-                function ()
-                    love.graphics.clear()
-                    self:_render_units(self.tick)
-                end
-            )
-
-            self.tick = self.tick + 1
-
-            if self.tick > self.max_tick then
-                self.tick = 1
+        self.unit_canvas:renderTo(
+            function ()
+                love.graphics.clear()
+                self:_render_units()
             end
-        end)
+        )
 
         self.draw_units = true
     end
@@ -250,18 +240,18 @@ function Viewer:_render_cursor(x, y)
     self.drawer:draw_at("cursor", (x - 1) * self.tile_size, (y - 1) * self.tile_size)
 end
 
-function Viewer:_render_units(tick)
+function Viewer:_render_units()
     local all_units = self.model:get_data():get_all_units()
 
     for _, unit in ipairs(all_units) do
         local x, y = unit:get_position()
-        local long_name = unit:get_team():get_name() .. "_" .. unit:get_name() .. "_" .. tick
+        local long_name = unit:get_team():get_name() .. "_" .. unit:get_name()
 
         if unit:get_team():get_owner() == TeamOwner.human and unit:is_action_left() then
-            self.drawer:draw_at("ready_to_go", (x - 1) * self.tile_size, (y - 1) * self.tile_size)
+            self.drawer:draw_at("ready_to_go", x, y)
         end
 
-        self.drawer:draw_at(long_name, (x - 1) * self.tile_size, (y - 1) * self.tile_size)
+        self.drawer:draw_at(long_name, x, y)
     end
 end
 

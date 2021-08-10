@@ -16,22 +16,14 @@ function Unit:initialize(data)
         error("Unit:initialize(): no data.team argument!")
     end
 
-    if not data.x then
-        error("Unit:initialize(): no data.x argument!")
-    end
-
-    if not data.y then
-        error("Unit:initialize(): no data.y argument!")
-    end
-
     if not data.move then
         error("Unit:initialize(): no data.move argument!")
     end
 
     self.name = data.name
     self.team = data.team
-    self.pos_x = data.x
-    self.pos_y = data.y
+    self.pos_x = nil
+    self.pos_y = nil
     self.move = data.move
 
     self.action_left = true
@@ -45,6 +37,10 @@ end
 
 function Unit:get_position()
     return self.pos_x, self.pos_y
+end
+
+function Unit:set_position(x, y)
+    self.pos_x, self.pos_y = x, y
 end
 
 function Unit:get_team()

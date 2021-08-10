@@ -28,7 +28,7 @@ end
 function GameplayState:execute(owner, dt)
     local logic = owner:get_logic()
     local data = owner:get_data()
-    local action = logic:get_new_action(data)
+    local action = logic:update(data)
 
     if action then
         owner:get_event_manager():post(StartAnimationEvent())
