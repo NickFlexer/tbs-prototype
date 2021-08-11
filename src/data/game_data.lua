@@ -38,6 +38,11 @@ function GameData:add_new_unit(unit, team, x, y)
     self.logger:debug("GameData: insert new unit [" .. unit:get_name() .. "] to team [" .. team:get_name() .. "]")
 end
 
+function GameData:set_unit_position(unit, new_x, new_y)
+    self.map:remove_unit(unit)
+    self.map:set_unit(unit, new_x, new_y)
+end
+
 function GameData:get_team(name)
     for _, team in ipairs(self.teams) do
         if team:get_name() == name then

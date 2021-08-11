@@ -45,6 +45,15 @@ function Map:get_unit_position(unit)
     end
 end
 
+function Map:remove_unit(unit)
+    local x, y = self:get_unit_position(unit)
+    self.map:get_cell(x, y):remove_unit()
+end
+
+function Map:set_unit(unit, x, y)
+    self.map:get_cell(x, y):set_unit(unit)
+end
+
 function Map:remove_move_area()
     for _, _, cell in self.map:iterate() do
         cell:clear_move_potention()

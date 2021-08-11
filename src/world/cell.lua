@@ -42,6 +42,10 @@ function Cell:get_unit()
     return self.unit
 end
 
+function Cell:remove_unit()
+    self.unit = nil
+end
+
 function Cell:set_move_potention()
     self.move_potention = true
 end

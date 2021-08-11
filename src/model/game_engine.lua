@@ -11,6 +11,7 @@ local AnimationState = require "model.states.animation_state"
 
 local GameLoadedEvent = require "event_manager.events.game_loaded_event"
 local StartAnimationEvent = require "event_manager.events.start_animain_event"
+local StartGameplayEvent = require "event_manager.events.start_gameplay_event"
 
 
 local GameEngine = class("GameEngine")
@@ -65,6 +66,10 @@ end
 
 function GameEngine:notify(event)
     if event:isInstanceOf(GameLoadedEvent) then
+        self.fsm:change_state(self.states.gameplay)
+    end
+
+    if event:isInstanceOf(StartGameplayEvent) then
         self.fsm:change_state(self.states.gameplay)
     end
 

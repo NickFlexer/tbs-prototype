@@ -47,9 +47,10 @@ function HandleMoveState:execute(owner, data)
 
         local x, y = map:get_unit_position(unit)
 
-        map:solve_move_area(x, y, unit:get_move())
-
-        data.event_manager:post(UpdateMoveAreaEvent())
+        if unit:is_action_left() then
+            map:solve_move_area(x, y, unit:get_move())
+            data.event_manager:post(UpdateMoveAreaEvent())
+        end
     end
 
     if self.chech_new_position then
@@ -59,11 +60,11 @@ function HandleMoveState:execute(owner, data)
 
         if cell:get_unit() and cell:get_unit():is_selected() then
             data.event_manager:post(UnselectUnitEvent())
-        elseif cell:get_unit() and cell:get_unit():get_team() == data.team  then
+        elseif cell:get_unit() and cell:get_unit():get_team() == data.team then
             data.event_manager:post(PlayerUnitSelectedEvent(cell:get_unit()))
         elseif not cell:is_move_potention() then
             data.event_manager:post(UnselectUnitEvent())
-        elseif cell:is_move_potention() then
+        elseif cell:is_move_potention()  then
             local start_x, start_y = map:get_unit_position(unit)
             local path = map:get_path(start_x, start_y, self.chech_new_position.x, self.chech_new_position.y)
 
@@ -73,7 +74,8 @@ function HandleMoveState:execute(owner, data)
 
                 data.logic:add_action(MoveAction({
                     unit = unit,
-                    path = path
+                    path = path,
+                    game_data = data.game_data
                 }))
             end
         end

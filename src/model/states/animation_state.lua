@@ -8,6 +8,7 @@ local Timer = require "hump.timer"
 local BaseState = require "model.states.base_state"
 
 local UpdateUnitsViewEvent = require "event_manager.events.update_units_view_event"
+local StartGameplayEvent = require "event_manager.events.start_gameplay_event"
 
 
 local AnimationState = class("AnimationState", BaseState)
@@ -18,10 +19,12 @@ function AnimationState:initialize(data)
 
     self.timer = Timer.new()
     self.first_start = nil
+    self.last_start = nil
 end
 
 function AnimationState:enter(owner)
     self.first_start = true
+    self.last_start = false
 end
 
 function AnimationState:execute(owner, dt, game_data, game_logic, tile_size)
@@ -37,12 +40,22 @@ function AnimationState:execute(owner, dt, game_data, game_logic, tile_size)
 
                 owner:get_event_manager():post(UpdateUnitsViewEvent())
 
-                return action:continue()
+                if not action:continue() then
+                    self.last_start = true
+
+                    return false
+                end
+
+                return true
             end
         )
     end
 
     self.timer:update(dt)
+
+    if self.last_start then
+        owner:get_event_manager():post(StartGameplayEvent())
+    end
 end
 
 function AnimationState:exit(owner)
