@@ -87,12 +87,19 @@ function GameLogic:notify(event)
     end
 
     if event:isInstanceOf(PhaseEndEvent) then
+        local units = self.teams[self.cur_team_num]:get_units()
+
+        for _, unit in ipairs(units) do
+            unit:end_action()
+        end
+
         self.cur_team_num = self.cur_team_num + 1
 
         if self.cur_team_num > #self.teams then
             self.event_manager:post(StartNewTurnEvent())
         end
 
+        self.event_manager:post(UpdateUnitsViewEvent())
         self.event_manager:post(CurrentPhaseEvent(self:get_current_team():get_name()))
     end
 
