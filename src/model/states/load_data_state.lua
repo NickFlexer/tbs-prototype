@@ -9,6 +9,7 @@ local BaseState = require "model.states.base_state"
 local GameLoadedEvent = require "event_manager.events.game_loaded_event"
 local UpdateMapViewEvent = require "event_manager.events.update_map_view_event"
 local UpdateUnitsViewEvent = require "event_manager.events.update_units_view_event"
+local StartNewTurnEvent = require "event_manager.events.start_new_turn_event"
 
 local MapCellFactory = require "data.factories.map_cell_factory"
 local MapData = require "data.map_data"
@@ -142,6 +143,7 @@ end
 
 function LoadDataState:_loading_end(owner)
     owner:get_event_manager():post(GameLoadedEvent())
+    owner:get_event_manager():post(StartNewTurnEvent())
 end
 
 return LoadDataState

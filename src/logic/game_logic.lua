@@ -9,6 +9,8 @@ local TeamOwner = require "data.enums.team_owner"
 local PhaseEndEvent = require "event_manager.events.turn_end_event"
 local TurnNumberEvent = require "event_manager.events.turn_number_event"
 local CurrentPhaseEvent = require "event_manager.events.current_phase_event"
+local StartNewTurnEvent = require "event_manager.events.start_new_turn_event"
+local UpdateUnitsViewEvent = require "event_manager.events.update_units_view_event"
 
 
 local GameLogic = class("GameLogic")
@@ -32,7 +34,7 @@ function GameLogic:initialize(data)
 
     self.event_manager:register(self)
 
-    self.turn = 1
+    self.turn = 0
     self.cur_team_num = 1
 
     self.teams = {}
@@ -67,15 +69,30 @@ function GameLogic:get_turn()
 end
 
 function GameLogic:notify(event)
+    if event:isInstanceOf(StartNewTurnEvent) then
+        self.cur_team_num = 1
+        self.turn = self.turn + 1
+
+        for _, team in ipairs(self.teams) do
+            local units = team:get_units()
+
+            for _, unit in ipairs(units) do
+                unit:reset_action()
+            end
+        end
+
+        self.event_manager:post(UpdateUnitsViewEvent())
+        self.event_manager:post(TurnNumberEvent(self.turn))
+        self.event_manager:post(CurrentPhaseEvent(self:get_current_team():get_name()))
+    end
+
     if event:isInstanceOf(PhaseEndEvent) then
         self.cur_team_num = self.cur_team_num + 1
 
         if self.cur_team_num > #self.teams then
-            self.cur_team_num = 1
-            self.turn = self.turn + 1
+            self.event_manager:post(StartNewTurnEvent())
         end
 
-        self.event_manager:post(TurnNumberEvent(self.turn))
         self.event_manager:post(CurrentPhaseEvent(self:get_current_team():get_name()))
     end
 

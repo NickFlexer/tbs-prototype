@@ -51,6 +51,10 @@ function Unit:end_action()
     self.action_left = false
 end
 
+function Unit:reset_action()
+    self.action_left = true
+end
+
 function Unit:is_action_left()
     return self.action_left
 end
