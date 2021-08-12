@@ -6,6 +6,10 @@ local class = require "middleclass"
 
 local TeamOwner = require "data.enums.team_owner"
 
+local PhaseEndEvent = require "event_manager.events.turn_end_event"
+local TurnNumberEvent = require "event_manager.events.turn_number_event"
+local CurrentPhaseEvent = require "event_manager.events.current_phase_event"
+
 
 local GameLogic = class("GameLogic")
 
@@ -63,6 +67,18 @@ function GameLogic:get_turn()
 end
 
 function GameLogic:notify(event)
+    if event:isInstanceOf(PhaseEndEvent) then
+        self.cur_team_num = self.cur_team_num + 1
+
+        if self.cur_team_num > #self.teams then
+            self.cur_team_num = 1
+            self.turn = self.turn + 1
+        end
+
+        self.event_manager:post(TurnNumberEvent(self.turn))
+        self.event_manager:post(CurrentPhaseEvent(self:get_current_team():get_name()))
+    end
+
     if self:get_current_team() and self:get_current_team():get_owner() == TeamOwner.human then
         self.human_control:notify(event)
     end

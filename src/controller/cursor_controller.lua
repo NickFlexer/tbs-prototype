@@ -24,9 +24,14 @@ function CursorController:initialize(data)
         error("CursorController:initialize(): no data.shift argument!")
     end
 
+    if not data.model then
+        error("CursorController:initialize(): no data.model argument!")
+    end
+
     self.event_manager = data.event_manager
     self.tile_size = data.tile_size
     self.shift = data.shift
+    self.model = data.model
 
     self.event_manager:register(self)
 
@@ -58,7 +63,11 @@ function CursorController:update(dt)
 end
 
 function CursorController:mouse_pressed()
-    self.event_manager:post(PositionPressedEvent(self.prev_x, self.prev_y))
+    local size_x, size_y = self.model:get_data():get_map():get_size()
+
+    if self.prev_x <= size_x and self.prev_y <= size_y then
+        self.event_manager:post(PositionPressedEvent(self.prev_x, self.prev_y))
+    end
 end
 
 return CursorController

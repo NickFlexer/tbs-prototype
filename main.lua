@@ -13,6 +13,7 @@ local GameEngine = require "model.game_engine"
 local EventManager = require "event_manager.event_manager"
 local ButtonController = require "controller.button_controller"
 local CursorController = require "controller.cursor_controller"
+local UiController = require "controller.ui_controller"
 local Viewer = require "view.viewer"
 local UIViewer = require "view.ui_viewer"
 
@@ -28,6 +29,7 @@ local UnitData = require "data.unit_data"
 local engine
 local button_controller
 local cursor_controller
+local ui_controller
 local viewer
 local ui_viewer
 
@@ -79,7 +81,12 @@ function love.load()
     cursor_controller = CursorController({
         event_manager = event_manager,
         tile_size = tile_size,
-        shift = shift
+        shift = shift,
+        model = engine
+    })
+
+    ui_controller = UiController({
+        event_manager = event_manager
     })
 
     viewer = Viewer({
@@ -108,6 +115,7 @@ function love.update(dt)
     end
 
     cursor_controller:update(dt)
+    ui_controller:update(dt)
     engine:update(dt)
     viewer:update(dt)
     ui_viewer:update(dt)
@@ -117,6 +125,7 @@ end
 function love.draw()
     viewer:render_all()
     ui_viewer:render_all()
+    ui_controller:render_all()
 end
 
 function love.mousepressed(x, y, button, istouch)
