@@ -90,7 +90,7 @@ function GameLogic:notify(event)
         local units = self.teams[self.cur_team_num]:get_units()
 
         for _, unit in ipairs(units) do
-            unit:end_action()
+            unit:end_moving()
         end
 
         self.cur_team_num = self.cur_team_num + 1

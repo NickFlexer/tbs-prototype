@@ -50,6 +50,8 @@ function HumanTeamControl:notify(event)
     end
 
     if event:isInstanceOf(UnselectUnitEvent) then
+        local unit = self.controlled_team:get_selected_unit()
+        unit:remove_targets()
         self.controlled_team:unselect_all()
 
         self.fsm:change_state(self.states.wait)

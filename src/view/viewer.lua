@@ -251,6 +251,13 @@ function Viewer:_render_units()
             self.drawer:draw_at("ready_to_go", x, y)
         end
 
+        local targets = unit:get_targets()
+
+        for _, target in ipairs(targets) do
+            local target_x, target_y = target:get_position()
+            self.drawer:draw_at("target", (target_x - 1) * self.tile_size, (target_y - 1) * self.tile_size)
+        end
+
         self.drawer:draw_at(long_name, x, y)
     end
 end

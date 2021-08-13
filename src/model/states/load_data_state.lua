@@ -96,11 +96,11 @@ function LoadDataState:_load_map(owner)
 
         for tile in row:gmatch(".") do
             if tile == "~" then
-                map:set_cell(x, y, terrain_factory:get_water())
+                map:set_cell(x, y, terrain_factory:get_water(x, y))
             end
 
             if tile == "." then
-                map:set_cell(x, y, terrain_factory:get_ground())
+                map:set_cell(x, y, terrain_factory:get_ground(x, y))
             end
 
             x = x + 1

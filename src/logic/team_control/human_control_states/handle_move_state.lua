@@ -13,6 +13,7 @@ local UnselectUnitEvent = require "event_manager.events.unselect_unit_event"
 local NewCursorPositionEvent = require "event_manager.events.new_cursor_position_event"
 local NewPathEvent = require "event_manager.events.new_path_event"
 local RemovePathEvent = require "event_manager.events.remove_path_event"
+local UpdateUnitsViewEvent = require "event_manager.events.update_units_view_event"
 
 local MoveAction = require "actions.move_action"
 
@@ -30,7 +31,7 @@ function HandleMoveState:initialize(data)
     self.logger = data.logger
 
     self.compute_move_area = false
-    self.chech_new_position = nil
+    self.check_new_position = nil
     self.solve_path = nil
 end
 
@@ -46,16 +47,19 @@ function HandleMoveState:execute(owner, data)
         local map = data.game_data:get_map()
 
         local x, y = map:get_unit_position(unit)
+        data.game_data:solve_unit_targets(unit)
 
-        if unit:is_action_left() then
+        data.event_manager:post(UpdateUnitsViewEvent())
+
+        if unit:is_move_left() then
             map:solve_move_area(x, y, unit:get_move())
             data.event_manager:post(UpdateMoveAreaEvent())
         end
     end
 
-    if self.chech_new_position then
+    if self.check_new_position then
         local map = data.game_data:get_map()
-        local cell = map:get_cell(self.chech_new_position.x, self.chech_new_position.y)
+        local cell = map:get_cell(self.check_new_position.x, self.check_new_position.y)
         local unit = data.team:get_selected_unit()
 
         if cell:get_unit() and cell:get_unit():is_selected() then
@@ -66,7 +70,7 @@ function HandleMoveState:execute(owner, data)
             data.event_manager:post(UnselectUnitEvent())
         elseif cell:is_move_potention()  then
             local start_x, start_y = map:get_unit_position(unit)
-            local path = map:get_path(start_x, start_y, self.chech_new_position.x, self.chech_new_position.y)
+            local path = map:get_path(start_x, start_y, self.check_new_position.x, self.check_new_position.y)
 
             if path then
                 data.event_manager:post(UnselectUnitEvent())
@@ -80,7 +84,7 @@ function HandleMoveState:execute(owner, data)
             end
         end
 
-        self.chech_new_position = nil
+        self.check_new_position = nil
     end
 
     if self.solve_path then
@@ -109,7 +113,7 @@ end
 function HandleMoveState:notify(event)
     if event:isInstanceOf(PositionPressedEvent) then
         local x, y = event:get_position()
-        self.chech_new_position = {x = x, y = y}
+        self.check_new_position = {x = x, y = y}
     end
 
     if event:isInstanceOf(NewCursorPositionEvent) then

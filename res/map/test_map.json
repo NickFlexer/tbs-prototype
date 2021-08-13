@@ -19,6 +19,7 @@
         {
             "name" : "red",
             "owner": "human",
+            "enimy" : "blue",
             "units" : [
                 {
                     "type" : "trooper",
@@ -46,6 +47,7 @@
         {
             "name" : "blue",
             "owner": "bot",
+            "enimy" : "red",
             "units" : [
                 {
                     "type" : "trooper",

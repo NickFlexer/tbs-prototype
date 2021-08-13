@@ -122,6 +122,47 @@ function Map:get_path(x0, y0, x1, y1)
     return path
 end
 
+function Map:solve_atack_area(start_pos_x, start_pos_y, range)
+    for x, y, cell in self.map:iterate() do
+        if x == start_pos_x and y == start_pos_y then
+            cell.atack_mark = 0
+        else
+            cell.atack_mark = nil
+        end
+    end
+
+    local x_shift = {1, 0, -1, 0}
+    local y_shift = {0, -1, 0, 1}
+
+    local cur_iter = 0
+    local rep = true
+
+    local res_data = {}
+
+    while rep do
+        for x, y, cell in self.map:iterate() do
+            if cell.atack_mark == cur_iter then
+                for i = 1, 4 do
+                    if self.map:is_valid(x + x_shift[i], y + y_shift[i]) and not self.map:get_cell(x + x_shift[i], y + y_shift[i]).atack_mark then
+                        if cur_iter + 1 <= range then
+                            self.map:get_cell(x + x_shift[i], y + y_shift[i]).atack_mark = cur_iter + 1
+                            table.insert(res_data, self.map:get_cell(x + x_shift[i], y + y_shift[i]))
+                        end
+                    end
+                end
+            end
+        end
+
+        cur_iter = cur_iter + 1
+
+        if cur_iter > range then
+            rep = false
+        end
+    end
+
+    return res_data
+end
+
 function Map:_position_is_open(x, y)
     return true
 end

@@ -16,8 +16,13 @@ function Cell:initialize(data)
         error("Cell:initialize(): no data.move_cost argument!")
     end
 
+    if not data.position then
+        error("Cell:initialize(): no data.position argument!")
+    end
+
     self.terrain = data.terrain
     self.move_cost = data.move_cost
+    self.position = data.position
     self.unit = nil
     self.move_potention = false
 end
@@ -28,6 +33,10 @@ end
 
 function Cell:get_move_cost()
     return self.move_cost
+end
+
+function Cell:get_position()
+    return self.position.x, self.position.y
 end
 
 function Cell:set_unit(unit)

@@ -8,6 +8,7 @@ local BaseState = require "logic.team_control.human_control_states.base_state"
 
 local PositionPressedEvent = require "event_manager.events.position_pressed_event"
 local PlayerUnitSelectedEvent = require "event_manager.events.player_unit_selected_event"
+local UpdateUnitsViewEvent = require "event_manager.events.update_units_view_event"
 
 
 local WaitSelectionState = class("WaitSelectionState", BaseState)
@@ -35,6 +36,7 @@ function WaitSelectionState:execute(owner, data)
         self.ent = false
 
         data.game_data:get_map():remove_move_area()
+        data.event_manager:post(UpdateUnitsViewEvent())
     end
 
     if self.check then

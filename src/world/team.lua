@@ -16,8 +16,13 @@ function Team:initialize(data)
         error("Team:initialize(): no data.owner argument!")
     end
 
+    if not data.enimy then
+        error("Team:initialize(): no data.enimy argument!")
+    end
+
     self.name = data.name
     self.owner = data.owner
+    self.enimy = data.enimy
     self.units = {}
 end
 
@@ -35,6 +40,10 @@ end
 
 function Team:get_units()
     return self.units
+end
+
+function Team:get_enimy()
+    return self.enimy
 end
 
 function Team:unselect_all()

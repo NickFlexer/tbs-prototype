@@ -43,6 +43,9 @@ function love.load()
     }
 
     local logger = Logger()
+    local game_data = GameData({
+        logger = logger
+    })
 
     local tile_drawer = TileDrawer({
         file_path = "res/img/tileset01.png",
@@ -55,9 +58,7 @@ function love.load()
 
     engine = GameEngine({
         event_manager = event_manager,
-        game_data = GameData({
-            logger = logger
-        }),
+        game_data = game_data,
         game_logic = GameLogic({
             logger = logger,
             event_manager = event_manager,

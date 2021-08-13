@@ -18,19 +18,21 @@ function MapCellFactory:initialize(data)
     self.terrain_data = data.terrain_data
 end
 
-function MapCellFactory:get_water()
+function MapCellFactory:get_water(x, y)
     local water = Cell({
         terrain = Terrain.water,
-        move_cost = self.terrain_data:get(Terrain.water).mv_coast
+        move_cost = self.terrain_data:get(Terrain.water).mv_coast,
+        position = {x = x, y = y}
     })
 
     return water
 end
 
-function MapCellFactory:get_ground()
+function MapCellFactory:get_ground(x, y)
     local ground = Cell({
         terrain = Terrain.ground,
-        move_cost = self.terrain_data:get(Terrain.ground).mv_coast
+        move_cost = self.terrain_data:get(Terrain.ground).mv_coast,
+        position = {x = x, y = y}
     })
 
     return ground

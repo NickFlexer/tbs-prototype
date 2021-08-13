@@ -75,6 +75,7 @@ function TileDrawer:initialize(data)
         {"can_move_marker", 13, 10},
 
         {"ready_to_go", 1, 9},
+        {"target", 2, 9},
 
         {"path_1", 5, 10},
         {"path_2", 3, 10},

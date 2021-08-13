@@ -1,5 +1,6 @@
 {
     "trooper" : {
-        "move" : 7
+        "move" : 7,
+        "range" : 1 
     }
 }

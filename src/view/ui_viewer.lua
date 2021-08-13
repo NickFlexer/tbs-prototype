@@ -54,6 +54,7 @@ function UIViewer:initialize(data)
     self.player_unit_tile = nil
     self.player_unit_move = nil
     self.player_unit_name = nil
+    self.player_unit_range = nil
 
     self.draw_terrain_preview = false
     self.draw_unit_preview = false
@@ -91,6 +92,7 @@ function UIViewer:notify(event)
         self.player_unit_tile = self:_get_unit_tile(unit)
         self.player_unit_name = unit:get_name()
         self.player_unit_move = unit:get_move()
+        self.player_unit_range = unit:get_range()
 
         self.draw_unit_preview = true
     end
@@ -134,15 +136,22 @@ function UIViewer:update(dt)
     if self.draw_unit_preview then
         self.ui:Label(
             self.player_unit_name,
-            {font = self.font},
+            {font = self.font, align = "left"},
             self.window_size.x, self.size * 14,
             self.size * 4, self.size
         )
 
         self.ui:Label(
             "Mv: " .. tostring(self.player_unit_move),
-            {font = self.font},
+            {font = self.font, align = "left"},
             self.window_size.x, self.size * 15,
+            self.size * 4, self.size
+        )
+
+        self.ui:Label(
+            "Range: " .. tostring(self.player_unit_range),
+            {font = self.font, align = "left"},
+            self.window_size.x, self.size * 16,
             self.size * 4, self.size
         )
     end

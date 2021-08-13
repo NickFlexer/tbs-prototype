@@ -31,7 +31,7 @@ function MoveAction:iterate(tile_size)
         self.index, self.target = next(self.path, self.index)
 
         if not self.target then
-            self.unit:end_action()
+            self.unit:end_moving()
 
             local new_x, new_y = self.unit:get_position()
 

@@ -65,4 +65,19 @@ function GameData:get_all_units()
     return all_units
 end
 
+function GameData:solve_unit_targets(unit)
+    local range = unit:get_range()
+    local x, y = self.map:get_unit_position(unit)
+
+    local result_cells = self.map:solve_atack_area(x, y, range)
+
+    for _, cell in ipairs(result_cells) do
+        local unit_on_cell = cell:get_unit()
+
+        if unit_on_cell and unit_on_cell:get_team():get_name() == unit:get_team():get_enimy() then
+            unit:add_target(cell)
+        end
+    end
+end
+
 return GameData
