@@ -8,6 +8,8 @@ local suit = require "suit"
 local TurnNumberEvent = require "event_manager.events.turn_number_event"
 local CurrentPhaseEvent = require "event_manager.events.current_phase_event"
 local NewCursorPositionEvent = require "event_manager.events.new_cursor_position_event"
+local PlayerUnitSelectedEvent = require "event_manager.events.player_unit_selected_event"
+local UnselectUnitEvent = require "event_manager.events.unselect_unit_event"
 
 local Terrain = require "data.enums.terrains"
 
@@ -49,7 +51,12 @@ function UIViewer:initialize(data)
     self.terrain_name = "-"
     self.terrain_mv_cost = "-"
 
+    self.player_unit_tile = nil
+    self.player_unit_move = nil
+    self.player_unit_name = nil
+
     self.draw_terrain_preview = false
+    self.draw_unit_preview = false
 end
 
 function UIViewer:notify(event)
@@ -76,6 +83,20 @@ function UIViewer:notify(event)
             self.terrain_mv_cost = "-"
             self.draw_terrain_preview = false
         end
+    end
+
+    if event:isInstanceOf(PlayerUnitSelectedEvent) then
+        local unit = event:get_unit()
+
+        self.player_unit_tile = self:_get_unit_tile(unit)
+        self.player_unit_name = unit:get_name()
+        self.player_unit_move = unit:get_move()
+
+        self.draw_unit_preview = true
+    end
+
+    if event:isInstanceOf(UnselectUnitEvent) then
+        self.draw_unit_preview = false
     end
 end
 
@@ -109,6 +130,22 @@ function UIViewer:update(dt)
         self.window_size.x, self.size * 9,
         self.size * 8, self.size
     )
+
+    if self.draw_unit_preview then
+        self.ui:Label(
+            self.player_unit_name,
+            {font = self.font},
+            self.window_size.x, self.size * 14,
+            self.size * 4, self.size
+        )
+
+        self.ui:Label(
+            "Mv: " .. tostring(self.player_unit_move),
+            {font = self.font},
+            self.window_size.x, self.size * 15,
+            self.size * 4, self.size
+        )
+    end
 end
 
 function UIViewer:render_all()
@@ -117,6 +154,20 @@ function UIViewer:render_all()
             self.terrain_tile,
             self.window_size.x + self.size * 3,
             self.size * 6
+        )
+    end
+
+    if self.draw_unit_preview then
+        self.drawer:draw_at(
+            Terrain.ground,
+            self.window_size.x ,
+            self.size * 12
+        )
+
+        self.drawer:draw_at(
+            self.player_unit_tile,
+            self.window_size.x ,
+            self.size * 12
         )
     end
 
@@ -129,6 +180,10 @@ function UIViewer:_get_terrain_tile(terrain)
     end
 
     return terrain
+end
+
+function UIViewer:_get_unit_tile(unit)
+    return unit:get_team():get_name() .. "_" .. unit:get_name()
 end
 
 return UIViewer
