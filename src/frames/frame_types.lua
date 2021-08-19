@@ -3,7 +3,8 @@
 
 
 local FrameTypes = {
-    dummy = "dummy"
+    dummy = "dummy",
+    load_mission = "load_mission"
 }
 
 return FrameTypes
