@@ -60,11 +60,11 @@ function LoadMissionLogic:_load_map()
         local x, y = position:get()
         local cell = nil
 
-        if terrain == TerrainTypes.water then
+        if terrain == "~" then
             cell = cell_factory:get_water(x, y)
         end
 
-        if terrain == TerrainTypes.ground then
+        if terrain == "." then
             cell = cell_factory:get_ground(x, y)
         end
 
@@ -73,7 +73,7 @@ function LoadMissionLogic:_load_map()
 end
 
 function LoadMissionLogic:_loading_finish()
-    self.navigator:navigate_to(FrameTypes.dummy)
+    self.navigator:navigate_to(FrameTypes.gameplay)
 end
 
 return LoadMissionLogic

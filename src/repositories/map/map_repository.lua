@@ -24,4 +24,14 @@ function MapRepository:set_cell(x, y, cell)
     self.map:set_cell(x, y, cell)
 end
 
+function MapRepository:get_all_cells()
+    local cells = {}
+
+    for _, _, cell in self.map:iterate() do
+        table.insert(cells, cell)
+    end
+
+    return cells
+end
+
 return MapRepository
