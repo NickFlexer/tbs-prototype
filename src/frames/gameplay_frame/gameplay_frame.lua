@@ -44,7 +44,6 @@ function GameplayFrame:update(dt)
                 love.graphics.clear()
 
                 local cells = self.logic:get_all_map_tiles()
-                print(#cells)
 
                 for _, cell in ipairs(cells) do
                     local tiles = cell:get_tiles()

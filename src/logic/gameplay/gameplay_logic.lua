@@ -4,9 +4,7 @@
 
 local class = require "middleclass"
 
-local DrawableCell = require "logic.gameplay.dto.drawable_cell"
-
-local Position = require "utils.position"
+local GenerateMapTilesCommand = require "logic.gameplay.command.generate_map_tiles_command"
 
 
 local GameplayLogic = class("GameplayLogic")
@@ -49,23 +47,12 @@ function GameplayLogic:get_full_map_size()
 end
 
 function GameplayLogic:get_all_map_tiles()
-    local cells = self.map_repository:get_all_cells()
-    local tile_size = self.map_settings_repository:get_tile_size()
+    local command = GenerateMapTilesCommand({
+        map_settings_repository = self.map_settings_repository,
+        map_repository = self.map_repository
+    })
 
-    local tiles = {}
-
-    for _, cell in ipairs(cells) do
-        local cell_x, cell_y = cell:get_position():get()
-
-        local tile = DrawableCell({
-            position = Position((cell_x - 1) * tile_size, (cell_y - 1) * tile_size),
-            tiles = {cell:get_terrain()}
-        })
-
-        table.insert(tiles, tile)
-    end
-
-    return tiles
+    return command:execute()
 end
 
 function GameplayLogic:get_tile_size()
