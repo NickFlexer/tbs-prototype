@@ -34,4 +34,12 @@ function MapRepository:get_all_cells()
     return cells
 end
 
+function MapRepository:get_cell(x, y)
+    if not self.map:is_valid(x, y) then
+        return nil
+    end
+
+    return self.map:get_cell(x, y)
+end
+
 return MapRepository

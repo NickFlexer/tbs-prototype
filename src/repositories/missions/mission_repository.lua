@@ -9,6 +9,8 @@ local Mission = require "repositories.missions.dto.mission"
 local Map = require "repositories.missions.dto.map"
 local Cell = require "repositories.missions.dto.cell"
 
+local Team = require "repositories.missions.dto.team"
+
 local Position = require "utils.position"
 
 
@@ -50,6 +52,16 @@ function MissionRepository:get_test_mission()
     end
 
     test_mission:set_map(mission_map)
+
+    local teams = mission_data.teams
+
+    for _, team in ipairs(teams) do
+        test_mission:add_team(
+            Team({
+                name = team.name
+            })
+        )
+    end
 
     return test_mission
 end

@@ -5,9 +5,9 @@
 local class = require "middleclass"
 
 local FrameTypes = require "frames.frame_types"
-local TerrainTypes = require "repositories.map.enums.terrain_types"
 
 local CellFactory = require "logic.load_mission.factories.cell_factory"
+local TeamFactory = require "logic.load_mission.factories.team_factory"
 
 
 local LoadMissionLogic = class("LoadMissionLogic")
@@ -25,14 +25,20 @@ function LoadMissionLogic:initialize(data)
         error("LoadMissionLogic:initialize(): no data.map_repository argument!")
     end
 
+    if not data.teams_repository then
+        error("LoadMissionLogic:initialize(): no data.teams_repository argument!")
+    end
+
     self.navigator = data.navigator
     self.mission_repository = data.mission_repository
     self.map_repository = data.map_repository
+    self.teams_repository = data.teams_repository
 
     self.actions = {}
     self.index = nil
 
     table.insert(self.actions, self._load_map)
+    table.insert(self.actions, self._load_teams)
     table.insert(self.actions, self._loading_finish)
 end
 
@@ -69,6 +75,19 @@ function LoadMissionLogic:_load_map()
         end
 
         self.map_repository:set_cell(x, y, cell)
+    end
+end
+
+function LoadMissionLogic:_load_teams()
+    local team_factory = TeamFactory()
+
+    local mission = self.mission_repository:get_test_mission()
+    local mission_teams = mission:get_teams()
+
+    for _, mission_team in ipairs(mission_teams) do
+        self.teams_repository:add_team(
+            team_factory:get_new_team(mission_team)
+        )
     end
 end
 

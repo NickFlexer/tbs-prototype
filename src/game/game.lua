@@ -16,16 +16,18 @@ local GameplayLogic = require "logic.gameplay.gameplay_logic"
 local MissionRepository = require "repositories.missions.mission_repository"
 local MapRepository = require "repositories.map.map_repository"
 local MapSettingsRepository = require "repositories.game_settings.map_settings_repository"
+local TeamsRepository = require "repositories.teams.teams_repository"
 
 
 local Game = class("Game")
 
-function Game:initialize(data)
+function Game:initialize()
     self.current_frame = nil
 
     self.mission_repository = nil
     self.map_repository = nil
     self.map_settings_repository = nil
+    self.teams_repository = nil
 end
 
 function Game:on_launched()
@@ -52,12 +54,14 @@ function Game:_create_frame(frame_type)
 
     if frame_type == FrameTypes.load_mission then
         self.map_repository = MapRepository()
+        self.teams_repository = TeamsRepository()
 
         local frame = LoadMissionFrame({
             logic = LoadMissionLogic({
                 navigator = self,
                 mission_repository = self.mission_repository,
-                map_repository = self.map_repository
+                map_repository = self.map_repository,
+                teams_repository = self.teams_repository
             })
         })
 
