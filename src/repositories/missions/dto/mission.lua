@@ -10,6 +10,7 @@ local Mission = class("Mission")
 function Mission:initialize()
     self.map = nil
     self.teams = {}
+    self.units = {}
 end
 
 function Mission:set_map(map)
@@ -26,6 +27,14 @@ end
 
 function Mission:get_teams()
     return self.teams
+end
+
+function Mission:add_unit(unit)
+    table.insert(self.units, unit)
+end
+
+function Mission:get_units()
+    return self.units
 end
 
 return Mission

@@ -17,6 +17,7 @@ local MissionRepository = require "repositories.missions.mission_repository"
 local MapRepository = require "repositories.map.map_repository"
 local MapSettingsRepository = require "repositories.game_settings.map_settings_repository"
 local TeamsRepository = require "repositories.teams.teams_repository"
+local UnitsRepository = require "repositories.units.units_repository"
 
 
 local Game = class("Game")
@@ -28,6 +29,7 @@ function Game:initialize()
     self.map_repository = nil
     self.map_settings_repository = nil
     self.teams_repository = nil
+    self.units_repository = nil
 end
 
 function Game:on_launched()
@@ -55,13 +57,17 @@ function Game:_create_frame(frame_type)
     if frame_type == FrameTypes.load_mission then
         self.map_repository = MapRepository()
         self.teams_repository = TeamsRepository()
+        self.units_repository = UnitsRepository()
+        self.map_settings_repository = MapSettingsRepository()
 
         local frame = LoadMissionFrame({
             logic = LoadMissionLogic({
                 navigator = self,
                 mission_repository = self.mission_repository,
                 map_repository = self.map_repository,
-                teams_repository = self.teams_repository
+                teams_repository = self.teams_repository,
+                units_repository = self.units_repository,
+                map_settings_repository = self.map_settings_repository
             })
         })
 
@@ -69,13 +75,12 @@ function Game:_create_frame(frame_type)
     end
 
     if frame_type == FrameTypes.gameplay then
-        self.map_settings_repository = MapSettingsRepository()
-
         local frame = GameplayFrame({
             logic = GameplayLogic({
                 navigator = self,
                 map_repository = self.map_repository,
-                map_settings_repository = self.map_settings_repository
+                map_settings_repository = self.map_settings_repository,
+                units_repository = self.units_repository
             })
         })
 

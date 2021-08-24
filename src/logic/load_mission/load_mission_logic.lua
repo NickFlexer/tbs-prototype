@@ -8,6 +8,7 @@ local FrameTypes = require "frames.frame_types"
 
 local CellFactory = require "logic.load_mission.factories.cell_factory"
 local TeamFactory = require "logic.load_mission.factories.team_factory"
+local UnitFactory = require "logic.load_mission.factories.unit_factory"
 
 
 local LoadMissionLogic = class("LoadMissionLogic")
@@ -29,16 +30,27 @@ function LoadMissionLogic:initialize(data)
         error("LoadMissionLogic:initialize(): no data.teams_repository argument!")
     end
 
+    if not data.units_repository then
+        error("LoadMissionLogic:initialize(): no data.units_repository argument!")
+    end
+
+    if not data.map_settings_repository then
+        error("LoadMissionLogic:initialize(): no data.map_settings_repository argument!")
+    end
+
     self.navigator = data.navigator
     self.mission_repository = data.mission_repository
     self.map_repository = data.map_repository
     self.teams_repository = data.teams_repository
+    self.units_repository = data.units_repository
+    self.map_settings_repository = data.map_settings_repository
 
     self.actions = {}
     self.index = nil
 
     table.insert(self.actions, self._load_map)
     table.insert(self.actions, self._load_teams)
+    table.insert(self.actions, self._load_units)
     table.insert(self.actions, self._loading_finish)
 end
 
@@ -88,6 +100,23 @@ function LoadMissionLogic:_load_teams()
         self.teams_repository:add_team(
             team_factory:get_new_team(mission_team)
         )
+    end
+end
+
+function LoadMissionLogic:_load_units()
+    local unit_factory = UnitFactory({
+        map_settings_repository = self.map_settings_repository
+    })
+
+    local mission = self.mission_repository:get_test_mission()
+    local mission_units = mission:get_units()
+
+    for _, mission_unit in ipairs(mission_units) do
+        if mission_unit:get_type() == "trooper" then
+            self.units_repository:add(
+                unit_factory:get_trooper(mission_unit)
+            )
+        end
     end
 end
 

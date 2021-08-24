@@ -22,6 +22,7 @@ function GameplayFrame:initialize(data)
     self.logic = data.logic
 
     self.map_canvas = nil
+    self.unit_canvas = nil
 
     self.drawer = TileDrawer({
         file_path = "res/img/tileset01.png",
@@ -34,27 +35,11 @@ end
 
 function GameplayFrame:update(dt)
     if self.logic:is_map_update() then
-        if not self.map_canvas then
-            local sixe_x, size_y = self.logic:get_full_map_size()
-            self.map_canvas = love.graphics.newCanvas(sixe_x, size_y)
-        end
+        self:_update_map_canvas()
+    end
 
-        self.map_canvas:renderTo(
-            function ()
-                love.graphics.clear()
-
-                local cells = self.logic:get_all_map_tiles()
-
-                for _, cell in ipairs(cells) do
-                    local tiles = cell:get_tiles()
-                    local pos_x, pos_y = cell:get_position():get()
-
-                    for _, tile in ipairs(tiles) do
-                        self.drawer:draw_at(tile, pos_x, pos_y)
-                    end
-                end
-            end
-        )
+    if self.logic:is_units_update() then
+        self:_update_unit_canvas()
     end
 end
 
@@ -64,10 +49,62 @@ function GameplayFrame:draw()
     if self.map_canvas then
         love.graphics.draw(self.map_canvas, self.shift_x, self.shift_y)
     end
+
+    if self.unit_canvas then
+        love.graphics.draw(self.unit_canvas, self.shift_x, self.shift_y)
+    end
 end
 
 function GameplayFrame:mouse_pressed(x, y, button, istouch)
     --
+end
+
+function GameplayFrame:_update_map_canvas()
+    if not self.map_canvas then
+        local sixe_x, size_y = self.logic:get_full_map_size()
+        self.map_canvas = love.graphics.newCanvas(sixe_x, size_y)
+    end
+
+    self.map_canvas:renderTo(
+        function ()
+            love.graphics.clear()
+
+            local cells = self.logic:get_all_map_tiles()
+
+            for _, cell in ipairs(cells) do
+                local tiles = cell:get_tiles()
+                local pos_x, pos_y = cell:get_position():get()
+
+                for _, tile in ipairs(tiles) do
+                    self.drawer:draw_at(tile, pos_x, pos_y)
+                end
+            end
+        end
+    )
+end
+
+function GameplayFrame:_update_unit_canvas()
+    if not self.unit_canvas then
+        local sixe_x, size_y = self.logic:get_full_map_size()
+        self.unit_canvas = love.graphics.newCanvas(sixe_x, size_y)
+    end
+
+    self.unit_canvas:renderTo(
+        function ()
+            love.graphics.clear()
+
+            local cells = self.logic:get_all_unit_tiles()
+
+            for _, cell in ipairs(cells) do
+                local tiles = cell:get_tiles()
+                local pos_x, pos_y = cell:get_position():get()
+
+                for _, tile in ipairs(tiles) do
+                    self.drawer:draw_at(tile, pos_x, pos_y)
+                end
+            end
+        end
+    )
 end
 
 return GameplayFrame

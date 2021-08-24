@@ -8,6 +8,7 @@ local json = require "json.json"
 local Mission = require "repositories.missions.dto.mission"
 local Map = require "repositories.missions.dto.map"
 local Cell = require "repositories.missions.dto.cell"
+local Unit = require "repositories.missions.dto.unit"
 
 local Team = require "repositories.missions.dto.team"
 
@@ -63,6 +64,8 @@ function MissionRepository:get_test_mission()
         )
     end
 
+    self:_get_all_units(test_mission, teams)
+
     return test_mission
 end
 
@@ -82,6 +85,20 @@ function MissionRepository:_get_map_string(map_data)
     end
 
     return map
+end
+
+function MissionRepository:_get_all_units(mission, teams_data)
+    for _, team in ipairs(teams_data) do
+        for _, unit in ipairs(team.units) do
+            local unit_data = Unit({
+                type = unit.type,
+                position = Position(unit.position.x, unit.position.y),
+                team = team.name
+            })
+
+            mission:add_unit(unit_data)
+        end
+    end
 end
 
 return MissionRepository
