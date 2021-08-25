@@ -19,6 +19,8 @@ local MapSettingsRepository = require "repositories.game_settings.map_settings_r
 local TeamsRepository = require "repositories.teams.teams_repository"
 local UnitsRepository = require "repositories.units.units_repository"
 
+local ViewContext = require "logic.gameplay.view_context"
+
 
 local Game = class("Game")
 
@@ -75,12 +77,20 @@ function Game:_create_frame(frame_type)
     end
 
     if frame_type == FrameTypes.gameplay then
+        local view_context = ViewContext({
+            map_repository = self.map_repository,
+            map_settings_repository = self.map_settings_repository,
+            units_repository = self.units_repository
+        })
+
         local frame = GameplayFrame({
+            view_context = view_context,
             logic = GameplayLogic({
                 navigator = self,
                 map_repository = self.map_repository,
                 map_settings_repository = self.map_settings_repository,
-                units_repository = self.units_repository
+                units_repository = self.units_repository,
+                view_context = view_context
             })
         })
 

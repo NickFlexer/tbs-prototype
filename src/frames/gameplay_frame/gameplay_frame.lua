@@ -15,18 +15,23 @@ function GameplayFrame:initialize(data)
     BaseFrame.initialize(self)
     self:check_abstract_methods(GameplayFrame)
 
+    if not data.view_context then
+        error("GameplayFrame:initialize(): no data.view_context argument!")
+    end
+
     if not data.logic then
         error("GameplayFrame:initialize(): no data.logic argument!")
     end
 
     self.logic = data.logic
+    self.view_context = data.view_context
 
     self.map_canvas = nil
     self.unit_canvas = nil
 
     self.drawer = TileDrawer({
         file_path = "res/img/tileset01.png",
-        tile_size = self.logic:get_tile_size()
+        tile_size = self.view_context:get_tile_size()
     })
 
     self.shift_x = 0
@@ -34,11 +39,11 @@ function GameplayFrame:initialize(data)
 end
 
 function GameplayFrame:update(dt)
-    if self.logic:is_map_update() then
+    if self.view_context:is_map_update() then
         self:_update_map_canvas()
     end
 
-    if self.logic:is_units_update() then
+    if self.view_context:is_units_update() then
         self:_update_unit_canvas()
     end
 end
@@ -69,7 +74,7 @@ function GameplayFrame:_update_map_canvas()
         function ()
             love.graphics.clear()
 
-            local cells = self.logic:get_all_map_tiles()
+            local cells = self.view_context:get_all_map_tiles()
 
             for _, cell in ipairs(cells) do
                 local tiles = cell:get_tiles()
@@ -93,7 +98,7 @@ function GameplayFrame:_update_unit_canvas()
         function ()
             love.graphics.clear()
 
-            local cells = self.logic:get_all_unit_tiles()
+            local cells = self.view_context:get_all_unit_tiles()
 
             for _, cell in ipairs(cells) do
                 local tiles = cell:get_tiles()
