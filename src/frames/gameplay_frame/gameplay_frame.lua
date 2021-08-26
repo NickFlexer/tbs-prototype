@@ -3,6 +3,7 @@
 
 
 local class = require "middleclass"
+local Camera = require "Camera"
 
 local BaseFrame = require "frames.base_frame"
 
@@ -36,9 +37,15 @@ function GameplayFrame:initialize(data)
 
     self.shift_x = 0
     self.shift_y = 0
+
+    self.camera = Camera()
+    self.camera.scale = 1
 end
 
 function GameplayFrame:update(dt)
+    self.camera:update(dt)
+    self.logic:update()
+
     if self.view_context:is_map_update() then
         self:_update_map_canvas()
     end
@@ -49,6 +56,8 @@ function GameplayFrame:update(dt)
 end
 
 function GameplayFrame:draw()
+    self.camera:attach()
+
     love.graphics.setColor(1, 1, 1)
 
     if self.map_canvas then
@@ -58,6 +67,9 @@ function GameplayFrame:draw()
     if self.unit_canvas then
         love.graphics.draw(self.unit_canvas, self.shift_x, self.shift_y)
     end
+
+    self.camera:detach()
+    self.camera:draw()
 end
 
 function GameplayFrame:mouse_pressed(x, y, button, istouch)
@@ -68,6 +80,8 @@ function GameplayFrame:_update_map_canvas()
     if not self.map_canvas then
         local sixe_x, size_y = self.logic:get_full_map_size()
         self.map_canvas = love.graphics.newCanvas(sixe_x, size_y)
+
+        self.camera:setBounds(0, 0, sixe_x, size_y)
     end
 
     self.map_canvas:renderTo(
