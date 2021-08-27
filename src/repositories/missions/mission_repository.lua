@@ -59,7 +59,8 @@ function MissionRepository:get_test_mission()
     for _, team in ipairs(teams) do
         test_mission:add_team(
             Team({
-                name = team.name
+                name = team.name,
+                owner = team.owner
             })
         )
     end

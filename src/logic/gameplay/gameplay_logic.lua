@@ -27,6 +27,14 @@ function GameplayLogic:initialize(data)
         error("GameplayLogic:initialize(): no data.units_repository argument!")
     end
 
+    if not data.teams_repository then
+        error("GameplayLogic:initialize(): no data.teams_repository argument!")
+    end
+
+    if not data.scenario_repository then
+        error("GameplayLogic:initialize(): no data.scenario_repository argument!")
+    end
+
     if not data.view_context then
         error("GameplayLogic:initialize(): no data.view_context argument!")
     end
@@ -35,11 +43,16 @@ function GameplayLogic:initialize(data)
     self.map_repository = data.map_repository
     self.map_settings_repository = data.map_settings_repository
     self.units_repository = data.units_repository
+    self.scenario_repository = data.scenario_repository
+    self.teams_repository = data.teams_repository
     self.view_context = data.view_context
 
     self.fsm = FSM(self)
     self.states = {
-        get_new_action = GetNewActionState()
+        get_new_action = GetNewActionState({
+            teams_repository = self.teams_repository,
+            scenario_repository = self.scenario_repository
+        })
     }
 
     self.fsm:set_current_state(self.states.get_new_action)

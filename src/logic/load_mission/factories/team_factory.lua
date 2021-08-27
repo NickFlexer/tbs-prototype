@@ -15,7 +15,8 @@ end
 
 function TeamFactory:get_new_team(team_data)
     return Team({
-        name = team_data:get_name()
+        name = team_data:get_name(),
+        owner = team_data:get_owner()
     })
 end
 

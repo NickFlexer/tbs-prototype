@@ -99,6 +99,8 @@ function Game:_create_frame(frame_type)
                 map_repository = self.map_repository,
                 map_settings_repository = self.map_settings_repository,
                 units_repository = self.units_repository,
+                scenario_repository = self.scenario_repository,
+                teams_repository = self.teams_repository,
                 view_context = view_context
             })
         })
