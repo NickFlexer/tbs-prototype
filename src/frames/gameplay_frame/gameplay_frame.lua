@@ -29,6 +29,7 @@ function GameplayFrame:initialize(data)
 
     self.map_canvas = nil
     self.unit_canvas = nil
+    self.cursor_canvas = nil
 
     self.drawer = TileDrawer({
         file_path = "res/img/tileset01.png",
@@ -37,6 +38,11 @@ function GameplayFrame:initialize(data)
 
     self.shift_x = 0
     self.shift_y = 0
+
+    self.cursor_prev_x = nil
+    self.cursor_prev_y = nil
+
+    self.tile_size = self.view_context:get_tile_size()
 
     self.camera = Camera()
     self.camera.scale = 1
@@ -53,6 +59,17 @@ function GameplayFrame:update(dt)
     if self.view_context:is_units_update() then
         self:_update_unit_canvas()
     end
+
+    local new_cursor_pos_x, new_cursor_pos_y = self.camera:toWorldCoords(love.mouse.getPosition())
+    local cur_x = math.floor((new_cursor_pos_x) / self.tile_size + 1)
+    local cur_y = math.floor((new_cursor_pos_y) / self.tile_size + 1)
+
+    if cur_x ~= self.cursor_prev_x or cur_y ~= self.cursor_prev_y and cur_x > 0 and cur_y > 0 then
+        self.cursor_prev_x = cur_x
+        self.cursor_prev_y = cur_y
+
+        self:_update_cursor_canvas(self.cursor_prev_x, self.cursor_prev_y)
+    end
 end
 
 function GameplayFrame:draw()
@@ -66,6 +83,10 @@ function GameplayFrame:draw()
 
     if self.unit_canvas then
         love.graphics.draw(self.unit_canvas, self.shift_x, self.shift_y)
+    end
+
+    if self.cursor_canvas then
+        love.graphics.draw(self.cursor_canvas, self.shift_x, self.shift_y)
     end
 
     self.camera:detach()
@@ -122,6 +143,24 @@ function GameplayFrame:_update_unit_canvas()
                     self.drawer:draw_at(tile, pos_x, pos_y)
                 end
             end
+        end
+    )
+end
+
+function GameplayFrame:_update_cursor_canvas(new_x, new_y)
+    if not self.cursor_canvas then
+        local sixe_x, size_y = self.logic:get_full_map_size()
+        self.cursor_canvas = love.graphics.newCanvas(sixe_x, size_y)
+    end
+
+    self.cursor_canvas:renderTo(
+        function ()
+            love.graphics.clear()
+
+            local x = (new_x - 1) * self.tile_size
+            local y = (new_y - 1) * self.tile_size
+
+            self.drawer:draw_at("cursor", x, y)
         end
     )
 end
