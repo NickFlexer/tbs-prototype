@@ -39,6 +39,9 @@ function GameplayFrame:initialize(data)
     self.shift_x = 0
     self.shift_y = 0
 
+    self.map_width = 1024
+    self.map_height = 768
+
     self.cursor_prev_x = nil
     self.cursor_prev_y = nil
 
@@ -93,8 +96,14 @@ function GameplayFrame:draw()
     self.camera:draw()
 end
 
+function GameplayFrame:when_done(action)
+    self.logic:execute_command(action)
+end
+
 function GameplayFrame:mouse_pressed(x, y, button, istouch)
-    --
+    if self.shift_x <= x and x <= self.map_width + self.shift_x and self.shift_y <= y and y <= self.map_height + self.shift_y then
+
+    end
 end
 
 function GameplayFrame:_update_map_canvas()

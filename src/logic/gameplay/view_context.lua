@@ -4,8 +4,8 @@
 
 local class = require "middleclass"
 
-local GenerateMapTilesCommand = require "logic.gameplay.command.generate_map_tiles_command"
-local GeneraeUnitsTilesCommand = require "logic.gameplay.command.generae_units_tiles_command"
+local GenerateMapTilesCommand = require "logic.gameplay.command.context_commands.generate_map_tiles_command"
+local GeneraeUnitsTilesCommand = require "logic.gameplay.command.context_commands.generae_units_tiles_command"
 
 
 local ViewContext = class("ViewContext")

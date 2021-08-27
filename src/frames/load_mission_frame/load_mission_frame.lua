@@ -28,6 +28,10 @@ function LoadMissionFrame:draw()
     love.graphics.print("Loading ....", love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 end
 
+function LoadMissionFrame:when_done(action)
+    -- body
+end
+
 function LoadMissionFrame:mouse_pressed(x, y, button, istouch)
     --
 end

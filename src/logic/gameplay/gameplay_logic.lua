@@ -55,6 +55,10 @@ function GameplayLogic:get_full_map_size()
     return map_x * tile_size, map_y * tile_size
 end
 
+function GameplayLogic:execute_command(command)
+    command:execute()
+end
+
 function GameplayLogic:update()
     self.fsm:update()
 end

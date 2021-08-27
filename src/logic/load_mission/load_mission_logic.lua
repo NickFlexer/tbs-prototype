@@ -10,6 +10,8 @@ local CellFactory = require "logic.load_mission.factories.cell_factory"
 local TeamFactory = require "logic.load_mission.factories.team_factory"
 local UnitFactory = require "logic.load_mission.factories.unit_factory"
 
+local InitializeScenarionCommand = require "logic.gameplay.command.initialize_scenarion_command"
+
 
 local LoadMissionLogic = class("LoadMissionLogic")
 
@@ -38,12 +40,17 @@ function LoadMissionLogic:initialize(data)
         error("LoadMissionLogic:initialize(): no data.map_settings_repository argument!")
     end
 
+    if not data.scenario_repository then
+        error("LoadMissionLogic:initialize(): no data.scenario_repository argument!")
+    end
+
     self.navigator = data.navigator
     self.mission_repository = data.mission_repository
     self.map_repository = data.map_repository
     self.teams_repository = data.teams_repository
     self.units_repository = data.units_repository
     self.map_settings_repository = data.map_settings_repository
+    self.scenario_repository = data.scenario_repository
 
     self.actions = {}
     self.index = nil
@@ -51,6 +58,7 @@ function LoadMissionLogic:initialize(data)
     table.insert(self.actions, self._load_map)
     table.insert(self.actions, self._load_teams)
     table.insert(self.actions, self._load_units)
+    table.insert(self.actions, self._load_scenario)
     table.insert(self.actions, self._loading_finish)
 end
 
@@ -120,8 +128,22 @@ function LoadMissionLogic:_load_units()
     end
 end
 
+function LoadMissionLogic:_load_scenario()
+    local mission = self.mission_repository:get_test_mission()
+    local mission_teams = mission:get_teams()
+
+    for _, team in ipairs(mission_teams) do
+        self.scenario_repository:add_phase(team:get_name())
+    end
+end
+
 function LoadMissionLogic:_loading_finish()
-    self.navigator:navigate_to(FrameTypes.gameplay)
+    self.navigator:navigate_to(
+        FrameTypes.gameplay,
+        InitializeScenarionCommand({
+            scenario_repository = self.scenario_repository
+        })
+    )
 end
 
 return LoadMissionLogic

@@ -21,6 +21,10 @@ function BaseFrame:draw()
     return self.abstractmethod
 end
 
+function BaseFrame:when_done(action)
+    return self.abstractmethod
+end
+
 function BaseFrame:mouse_pressed(x, y, button, istouch)
     return self.abstractmethod
 end
